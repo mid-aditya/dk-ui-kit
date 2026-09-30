@@ -9,7 +9,6 @@
 	import * as Select from '$lib/components/ui/select';
 	import * as Table from '$lib/components/ui/table';
 	import * as Pagination from '$lib/components/ui/pagination';
-	import * as Chart from '$lib/components/ui/chart';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
@@ -19,7 +18,7 @@
 	import { Slider } from '$lib/components/ui/slider';
 	import { Calendar } from '$lib/components/ui/calendar';
 	import { CalendarDate } from '@internationalized/date';
-	import { Chart as LCChart, Svg, Axis, Grid, Bars } from 'layerchart';
+
 	import { toast } from 'svelte-sonner';
 	import { Settings, Mail, Send, LayoutTemplate, Search, CircleCheck, TriangleAlert, KeyRound, History } from 'lucide-svelte';
 
@@ -77,7 +76,7 @@
 	const usage = [
 		{ label: 'WA', value: 78 }, { label: 'Email', value: 52 }, { label: 'HSM', value: 64 }
 	];
-	const chartConfig = { value: { label: 'Pemakaian %' } } satisfies import('$lib/components/ui/chart').ChartConfig;
+
 
 	function filteredCards(list: { title: string; desc: string }[]) {
 		const q = search.trim().toLowerCase();
@@ -204,11 +203,7 @@
 						<Card.Root>
 							<Card.Header><Card.Title>Pemakaian channel</Card.Title><p class="text-sm text-muted-foreground">Persentase kuota blast.</p></Card.Header>
 							<Card.Content>
-								<Chart.Container config={chartConfig} class="aspect-auto h-44">
-									<LCChart data={usage} x="label" y="value" padding={{ left: 8, right: 8 }}>
-										<Svg><Grid vertical={false} /><Axis placement="bottom" /><Axis placement="left" grid rule /><Bars radius={6} /></Svg>
-									</LCChart>
-								</Chart.Container>
+								<div class="flex flex-wrap gap-2">{#each usage as u}<Badge variant="outline">{u.label}: {u.value}%</Badge>{/each}</div>
 								<Separator class="my-3" />
 								{#each usage as u}<div class="mb-2 flex items-center justify-between text-xs"><span class="text-muted-foreground">{u.label}</span><span class="font-semibold">{u.value}%</span></div><Progress value={u.value} class="mb-3" />{/each}
 							</Card.Content>

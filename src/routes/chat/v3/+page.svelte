@@ -22,11 +22,20 @@
 	import { cn } from '$lib/utils';
 	import { Search, Send, Paperclip, Smile, Phone, MoreVertical, Inbox, CheckCheck } from 'lucide-svelte';
 
+	let openChatTab = $state('served');
+	const tabStatus: Record<string, number> = { served: 3, chatbot: 5, resolved: 4 };
 	const queues = [
 		{ id: 1, customer: 'Budi Santoso', channel: 'WhatsApp', last: 'Halo, paket saya belum sampai?', time: '10:20', unread: 3, status: 'open' },
 		{ id: 2, customer: 'Siti Aminah', channel: 'Email', last: 'Mohon info pengajuan KTP…', time: '09:45', unread: 1, status: 'pending' },
-		{ id: 3, customer: 'Andi Wijaya', channel: 'Live Chat', last: 'Terima kasih atas bantuannya', time: '08:15', unread: 0, status: 'resolved' }
+		{ id: 3, customer: 'Bot Assistant', channel: 'Live Chat', last: 'Baik, saya bantu cek resi…', time: '09:00', unread: 0, status: 'bot' },
+		{ id: 4, customer: 'Dewi Lestari', channel: 'Live Chat', last: 'Oke, ditunggu kabar bot…', time: '08:30', unread: 0, status: 'bot' },
+		{ id: 5, customer: 'Andi Wijaya', channel: 'Live Chat', last: 'Terima kasih atas bantuannya', time: '08:15', unread: 0, status: 'resolved' }
 	];
+	const filteredQueues = $derived(
+		openChatTab === 'served' ? queues.filter((q) => q.status === 'open' || q.status === 'pending')
+		: openChatTab === 'chatbot' ? queues.filter((q) => q.status === 'bot')
+		: queues.filter((q) => q.status === 'resolved')
+	);
 	let selected = $state(queues[0]);
 	let draft = $state('');
 	let loading = $state(false);
@@ -45,14 +54,14 @@
 	function simulateLoad() { loading = true; setTimeout(() => (loading = false), 900); }
 </script>
 
-<svelte:head><title>Chat v3 — DK UI Kit</title></svelte:head>
+<svelte:head><title>Omnichat</title></svelte:head>
 
 <div class="flex flex-col gap-3">
-	<Tabs.Root value="all">
+	<Tabs.Root bind:value={openChatTab}>
 		<Tabs.List>
-			<Tabs.Trigger value="all">Semua Antrian</Tabs.Trigger>
-			<Tabs.Trigger value="mine">Milik Saya</Tabs.Trigger>
-			<Tabs.Trigger value="unassigned">Unassigned</Tabs.Trigger>
+			<Tabs.Trigger value="served">Served</Tabs.Trigger>
+			<Tabs.Trigger value="chatbot">Chatbot</Tabs.Trigger>
+			<Tabs.Trigger value="resolved">Resolved</Tabs.Trigger>
 		</Tabs.List>
 	</Tabs.Root>
 
@@ -88,7 +97,7 @@
 				<Separator />
 				<ScrollArea.Root class="h-[55vh]">
 					<div class="flex flex-col gap-2 p-3">
-						{#each queues as q (q.id)}
+						{#each filteredQueues as q (q.id)}
 							<button onclick={() => { selected = q; simulateLoad(); }} class={cn('flex items-center gap-3 rounded-lg p-3 text-left hover:bg-muted/50', selected.id === q.id && 'bg-muted')}>
 								<Avatar.Root><Avatar.Fallback>{initials(q.customer)}</Avatar.Fallback></Avatar.Root>
 								<span class="min-w-0 flex-1">

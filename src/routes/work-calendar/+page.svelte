@@ -7,7 +7,6 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Alert from '$lib/components/ui/alert';
 	import * as Avatar from '$lib/components/ui/avatar';
-	import * as Chart from '$lib/components/ui/chart';
 	import * as ToggleGroup from '$lib/components/ui/toggle-group';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Badge } from '$lib/components/ui/badge';
@@ -42,7 +41,6 @@
 	function load() { loading = true; setTimeout(() => (loading = false), 500); }
 	const BtnIcon = $derived(loading ? Spinner : CalendarDays);
 	function save() { holidays = [...holidays, { date: '31 Des 2026', name: 'Hari Libur Custom', category: 'Custom', status: 'Aktif', tmpl: 'Tidak' }]; open = false; }
-	const chartConfig = { n: { label: 'Hari libur', color: 'var(--primary)' } };
 	const perCat = $derived([
 		{ label: 'Nasional', value: holidays.filter((h) => h.category === 'Libur Nasional').length * 20 },
 		{ label: 'Pemerintahan', value: 10 }, { label: 'Custom', value: holidays.filter((h) => h.category === 'Custom').length * 20 }
@@ -81,7 +79,6 @@
 		<Card.Root>
 			<Card.Header><Card.Title>Komposisi libur</Card.Title><Card.Description>Per kategori tahun {year}.</Card.Description></Card.Header>
 			<Card.Content class="flex flex-col gap-3">
-				<Chart.Container config={chartConfig} class="min-h-28"><div class="flex h-24 w-full items-end gap-2">{#each perCat as p}<div class="flex flex-1 flex-col items-center gap-1"><div class="w-full rounded bg-primary/80" style="height:{Math.max(8, p.value)}%"></div><span class="text-[10px]">{p.label}</span></div>{/each}</div></Chart.Container>
 				{#each perCat as p}<div class="flex flex-col gap-1.5"><div class="flex justify-between text-sm"><span>{p.label}</span><span class="text-muted-foreground">{p.value}%</span></div><Progress value={p.value} /></div>{/each}
 			</Card.Content>
 			<Card.Footer><p class="text-muted-foreground text-xs">Dipakai untuk perhitungan SLA tiket.</p></Card.Footer>

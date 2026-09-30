@@ -7,7 +7,6 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Alert from '$lib/components/ui/alert';
 	import * as Avatar from '$lib/components/ui/avatar';
-	import * as Chart from '$lib/components/ui/chart';
 	import * as ToggleGroup from '$lib/components/ui/toggle-group';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Badge } from '$lib/components/ui/badge';
@@ -38,7 +37,7 @@
 	let filtered = $derived(schedules.filter((s) => s.date.toLowerCase().includes(q.toLowerCase()) && (status === 'semua' || s.status === status)));
 	function search() { loading = true; setTimeout(() => (loading = false), 500); }
 	const BtnIcon = $derived(loading ? Spinner : Search);
-	const chartConfig = { agents: { label: 'Agent', color: 'var(--primary)' } };
+
 </script>
 
 <svelte:head><title>Agent Schedule</title></svelte:head>
@@ -67,7 +66,7 @@
 		<Card.Root>
 			<Card.Header><Card.Title>Jadwal per tanggal</Card.Title><Card.Description>Kolom: No, Tanggal, Jumlah Agent, Channel, Aksi.</Card.Description></Card.Header>
 			<Card.Content class="flex flex-col gap-4">
-				<Chart.Container config={chartConfig} class="min-h-32"><div class="flex h-28 w-full items-end gap-2">{#each filtered as s}<div class="flex-1 rounded bg-primary/80" style="height:{s.cap}%"></div>{/each}</div></Chart.Container>
+				<div class="flex flex-col gap-2">{#each filtered as s}<div class="flex items-center gap-3"><Badge variant="outline" class="min-w-24 justify-center">{s.date}</Badge><Progress value={s.cap} class="flex-1" /><span class="text-xs font-medium">{s.cap}%</span></div>{/each}</div>
 				{#if loading}
 					<div class="flex flex-col gap-2">{#each [1, 2, 3] as _}<Skeleton class="h-12 w-full" />{/each}</div>
 				{:else if filtered.length === 0}

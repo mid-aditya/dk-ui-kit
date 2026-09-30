@@ -7,7 +7,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Alert from '$lib/components/ui/alert';
 	import * as Avatar from '$lib/components/ui/avatar';
-	import * as Chart from '$lib/components/ui/chart';
+
 	import * as ToggleGroup from '$lib/components/ui/toggle-group';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Badge } from '$lib/components/ui/badge';
@@ -32,7 +32,7 @@
 	let filtered = $derived(agents.filter((a) => `${a.name} ${a.user}`.toLowerCase().includes(q.toLowerCase()) && (view === 'semua' || (view === 'ready' ? a.status === 'Ready' : a.status === 'Offline'))));
 	function reload() { loading = true; setTimeout(() => (loading = false), 500); }
 	const BtnIcon = $derived(loading ? Spinner : Users);
-	const chartConfig = { total: { label: 'Handled', color: 'var(--primary)' } };
+
 </script>
 
 <svelte:head><title>Agent Performance</title></svelte:head>
@@ -78,7 +78,8 @@
 	<Card.Root>
 		<Card.Header><Card.Title>Performance History</Card.Title><Card.Description>Detailed agent performance metrics: Total Handled, Avg Response, Success Rate, Rating.</Card.Description></Card.Header>
 		<Card.Content class="flex flex-col gap-4">
-			<Chart.Container config={chartConfig} class="min-h-36"><div class="flex h-32 w-full items-end gap-2">{#each filtered as a}<div class="flex flex-1 flex-col items-center gap-1"><div class="w-full rounded bg-primary/80" style="height:{Math.round((a.total / 128) * 100)}%"></div><span class="text-[10px]">{a.name.split(' ')[0]}</span></div>{/each}</div></Chart.Container>
+			<div class="flex flex-col gap-2">{#each filtered as a}<div class="flex items-center gap-3"><Badge variant="outline" class="min-w-24 justify-center">{a.name.split(' ')[0]}</Badge><Progress value={Math.round((a.total / 128) * 100)} class="flex-1" /><span class="text-xs font-medium">{a.total} handled</span></div>{/each}</div>
+
 			<Table.Root><Table.Header><Table.Row><Table.Head>Agent</Table.Head><Table.Head>Total Handled</Table.Head><Table.Head>Avg Response</Table.Head><Table.Head>Success Rate</Table.Head><Table.Head>Rating</Table.Head></Table.Row></Table.Header>
 			<Table.Body>{#each filtered as a}<Table.Row><Table.Cell class="font-medium">{a.name}</Table.Cell><Table.Cell>{a.total}</Table.Cell><Table.Cell>{a.avg}</Table.Cell><Table.Cell><div class="flex items-center gap-2"><Progress value={a.rate} class="w-20" /><span class="text-xs">{a.rate}%</span></div></Table.Cell><Table.Cell><span class="flex items-center gap-1 font-medium"><Star data-icon="inline" />{a.rating}</span></Table.Cell></Table.Row>{/each}</Table.Body></Table.Root>
 		</Card.Content>
