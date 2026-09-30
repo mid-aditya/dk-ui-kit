@@ -26,11 +26,11 @@
 
 <!-- Toolbar -->
 <div class="mt-3 flex flex-wrap items-center gap-3">
-  <Select bind:value={period} class="!w-auto">
-    <option value="7">7 hari terakhir</option>
-    <option value="30">30 hari terakhir</option>
-    <option value="90">90 hari terakhir</option>
-  </Select>
+  <Select bind:value={period} class="!w-auto" options={[
+    { value: '7', label: '7 hari terakhir' },
+    { value: '30', label: '30 hari terakhir' },
+    { value: '90', label: '90 hari terakhir' }
+  ]} />
   <Calendar bind:value={selectedDate} />
 </div>
 

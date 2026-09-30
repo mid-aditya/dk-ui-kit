@@ -72,7 +72,7 @@
 
 <div class="flex h-screen overflow-hidden bg-background text-foreground">
   <!-- Sidebar desktop -->
-  <aside class="hidden shrink-0 flex-col transition-all md:flex {collapsed ? 'w-16' : 'w-64'}" style="background-color: var(--sidebar-bg); color: var(--sidebar-text);">
+  <aside class="hidden shrink-0 h-full flex-col transition-all md:flex {collapsed ? 'w-16' : 'w-64'}" style="background-color: var(--sidebar-bg); color: var(--sidebar-text);">
     <!-- Logo -->
     <div class="flex items-center gap-3 border-b px-4 py-5" style="border-color: var(--sidebar-border);" class:justify-center={collapsed}>
       <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white" style="background-color: var(--sidebar-logo-bg);">

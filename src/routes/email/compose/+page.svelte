@@ -81,11 +81,11 @@
   <Card>
     <CardHeader><CardTitle>Dari template</CardTitle></CardHeader>
     <CardContent class="space-y-4">
-      <Select bind:value={template} onchange={useTemplate}>
-        <option value="">Pilih template…</option>
-        <option value="followup">Follow-up penawaran</option>
-        <option value="csat">Survei CSAT</option>
-      </Select>
+      <Select bind:value={template} onchange={useTemplate} options={[
+        { value: '', label: 'Pilih template…' },
+        { value: 'followup', label: 'Follow-up penawaran' },
+        { value: 'csat', label: 'Survei CSAT' }
+      ]} />
       <p class="text-xs text-muted-foreground">
         Template lengkap dikelola di <a href="/email/templates" class="font-semibold text-primary">Email Templates</a>.
       </p>

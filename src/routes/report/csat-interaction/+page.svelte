@@ -29,12 +29,12 @@
 
 <!-- Toolbar -->
 <div class="mt-3 flex flex-wrap items-center gap-2">
-  <Select bind:value={agent} class="!w-auto">
-    <option value="">Semua agent</option>
-    <option>Kirana Ayu</option>
-    <option>Bimo Prasetyo</option>
-    <option>Raka Aditya</option>
-  </Select>
+  <Select bind:value={agent} class="!w-auto" options={[
+    { value: '', label: 'Semua agent' },
+    { value: 'kirana', label: 'Kirana Ayu' },
+    { value: 'bimo', label: 'Bimo Prasetyo' },
+    { value: 'raka', label: 'Raka Aditya' }
+  ]} />
 </div>
 
 <!-- Low Rating Alert -->

@@ -69,11 +69,11 @@
       <CardContent class="space-y-4 p-5">
         <div>
           <Label for="st-ch">Kanal default balasan</Label>
-          <Select id="st-ch" bind:value={channel}>
-            <option value="whatsapp">WhatsApp</option>
-            <option value="email">Email</option>
-            <option value="telegram">Telegram</option>
-          </Select>
+          <Select id="st-ch" bind:value={channel} options={[
+            { value: 'whatsapp', label: 'WhatsApp' },
+            { value: 'email', label: 'Email' },
+            { value: 'telegram', label: 'Telegram' }
+          ]} />
         </div>
 
         <Card>

@@ -32,12 +32,12 @@
 
 <!-- Toolbar -->
 <div class="mt-3 flex flex-wrap items-center gap-2">
-  <Select bind:value={status} class="!w-auto">
-    <option value="">Semua status</option>
-    <option value="open">Open</option>
-    <option value="pending">Pending</option>
-    <option value="resolved">Resolved</option>
-  </Select>
+  <Select bind:value={status} class="!w-auto" options={[
+    { value: '', label: 'Semua status' },
+    { value: 'open', label: 'Open' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'resolved', label: 'Resolved' }
+  ]} />
   <Button size="sm" variant="secondary" href="/chat/v3/ticket/result">Hasil tiket</Button>
   <Button size="sm" variant="secondary" href="/chat/v3/ticket/kirana-monitoring">Monitoring</Button>
 </div>
@@ -102,11 +102,11 @@
     </div>
     <div>
       <Label for="tk-p">Prioritas</Label>
-      <Select id="tk-p" bind:value={form.priority}>
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="urgent">Urgent</option>
-      </Select>
+      <Select id="tk-p" bind:value={form.priority} options={[
+        { value: 'low', label: 'Low' },
+        { value: 'medium', label: 'Medium' },
+        { value: 'urgent', label: 'Urgent' }
+      ]} />
     </div>
     <Button type="submit" class="w-full">Simpan</Button>
   </form>

@@ -28,12 +28,12 @@
 
 <!-- Toolbar -->
 <div class="mt-3 flex flex-wrap items-center gap-2">
-  <Select bind:value={status} class="!w-auto">
-    <option value="">Semua status</option>
-    <option value="open">Open</option>
-    <option value="pending">Pending</option>
-    <option value="resolved">Resolved</option>
-  </Select>
+  <Select bind:value={status} class="!w-auto" options={[
+    { value: '', label: 'Semua status' },
+    { value: 'open', label: 'Open' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'resolved', label: 'Resolved' }
+  ]} />
   <Button size="sm" variant="secondary">Export</Button>
 </div>
 
