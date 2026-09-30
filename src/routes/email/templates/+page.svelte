@@ -11,25 +11,39 @@
 <div class="flex items-center justify-between">
   <div>
     <h1 class="text-2xl font-extrabold tracking-tight">Email Templates</h1>
-    <p class="mt-0.5 text-sm text-slate-500 dark:text-slate-400">Template siap pakai dengan variabel.</p>
+    <p class="mt-0.5 text-sm text-muted-foreground">Template siap pakai dengan variabel.</p>
   </div>
   <Button size="sm">Template baru</Button>
 </div>
 
+<!-- Templates Grid -->
 <div class="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
   {#each templates as t}
-    <Card>
+    <Card class="hover:shadow-md transition-shadow">
       <CardContent class="p-4">
+        <!-- Header -->
         <div class="flex items-center justify-between gap-2">
-          <strong>{t.name}</strong>
-          <Badge>aktif</Badge>
+          <h3 class="font-semibold">{t.name}</h3>
+          <Badge variant="success">Aktif</Badge>
         </div>
-        <p class="mt-2 rounded-lg bg-slate-50 p-2 font-mono text-xs text-slate-500 dark:bg-slate-800 dark:text-slate-400">{t.subject}</p>
-        <div class="mt-3 flex gap-2">
-          <Button size="sm" variant="secondary" class="flex-1" href="/email/compose">Pakai</Button>
-          <Button size="sm" variant="secondary" class="flex-1">Duplikat</Button>
+
+        <!-- Subject Preview -->
+        <div class="mt-3 rounded-lg bg-muted p-3">
+          <p class="text-xs text-muted-foreground">Subjek:</p>
+          <p class="font-mono text-sm">{t.subject}</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-4 flex gap-2">
+          <Button size="sm" variant="secondary" href="/email/compose" class="flex-1">Pakai</Button>
+          <Button size="sm" variant="outline" class="flex-1">Duplikat</Button>
         </div>
       </CardContent>
     </Card>
+  {:else}
+    <div class="col-span-full p-8 text-center">
+      <p class="text-sm text-muted-foreground">Belum ada template.</p>
+      <Button size="sm" class="mt-2">Buat template baru</Button>
+    </div>
   {/each}
 </div>

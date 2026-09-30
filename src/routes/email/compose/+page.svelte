@@ -8,46 +8,87 @@
   import Label from '$lib/components/ui/label.svelte';
   import Textarea from '$lib/components/ui/textarea.svelte';
   import Select from '$lib/components/ui/select.svelte';
+  import Alert from '$lib/components/ui/alert.svelte';
 
-  let to = '';
-  let subject = '';
-  let body = '';
-  let template = '';
-  let sent = false;
+  let to = $state('');
+  let subject = $state('');
+  let body = $state('');
+  let template = $state('');
+  let sent = $state(false);
 
   function useTemplate() {
     if (template === 'followup') subject = 'Follow-up penawaran Q3';
     if (template === 'csat') subject = 'Seberapa puas Anda dengan layanan kami?';
   }
+
+  function handleSend() {
+    if (!to.trim() || !subject.trim()) return;
+    sent = true;
+    setTimeout(() => sent = false, 3000);
+  }
 </script>
 
 <svelte:head><title>Compose Email — DK UI Kit</title></svelte:head>
 
-<h1 class="text-2xl font-extrabold tracking-tight">Compose</h1>
-<p class="mt-0.5 text-sm text-slate-500 dark:text-slate-400">Tulis email baru ke pelanggan.</p>
+<div class="flex items-center justify-between">
+  <div>
+    <h1 class="text-2xl font-extrabold tracking-tight">Compose</h1>
+    <p class="mt-0.5 text-sm text-muted-foreground">Tulis email baru ke pelanggan.</p>
+  </div>
+  <Button variant="ghost" href="/email">Kembali ke inbox</Button>
+</div>
 
 <div class="mt-3 grid gap-3 lg:grid-cols-3">
-  <Card class="lg:col-span-2">
-    <CardContent class="space-y-2 p-5">
-      <div><Label for="em-to">Kepada *</Label><Input id="em-to" bind:value={to} required placeholder="nama@perusahaan.id" /></div>
-      <div><Label for="em-subject">Subjek *</Label><Input id="em-subject" bind:value={subject} required placeholder="Subjek email" /></div>
-      <div><Label for="em-body">Isi *</Label><Textarea id="em-body" bind:value={body} rows={8} placeholder="Tulis pesan…" /></div>
-      {#if sent}<p class="rounded-xl bg-emerald-50 border border-emerald-100 px-3 py-2 text-sm text-emerald-700">Email masuk antrean kirim.</p>{/if}
-      <div class="flex gap-2">
-        <Button onclick={() => (sent = true)}>Kirim</Button>
-        <Button variant="secondary" href="/email?status=draft">Simpan draft</Button>
-      </div>
-    </CardContent>
-  </Card>
+  <!-- Compose Form -->
+  <div class="lg:col-span-2">
+    <Card>
+      <CardContent class="space-y-4 p-5">
+        <!-- To -->
+        <div>
+          <Label for="em-to">Kepada *</Label>
+          <Input id="em-to" bind:value={to} required placeholder="nama@perusahaan.id" />
+        </div>
+
+        <!-- Subject -->
+        <div>
+          <Label for="em-subject">Subjek *</Label>
+          <Input id="em-subject" bind:value={subject} required placeholder="Subjek email" />
+        </div>
+
+        <!-- Body -->
+        <div>
+          <Label for="em-body">Isi *</Label>
+          <Textarea id="em-body" bind:value={body} rows={10} placeholder="Tulis pesan…" />
+        </div>
+
+        <!-- Success Alert -->
+        {#if sent}
+          <Alert variant="success" title="Email dikirim">
+            Email masuk antrean kirim.
+          </Alert>
+        {/if}
+
+        <!-- Actions -->
+        <div class="flex gap-2">
+          <Button onclick={handleSend} disabled={!to.trim() || !subject.trim()}>Kirim</Button>
+          <Button variant="secondary" href="/email?status=draft">Simpan draft</Button>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+
+  <!-- Template Sidebar -->
   <Card>
     <CardHeader><CardTitle>Dari template</CardTitle></CardHeader>
-    <CardContent class="space-y-2">
+    <CardContent class="space-y-4">
       <Select bind:value={template} onchange={useTemplate}>
         <option value="">Pilih template…</option>
         <option value="followup">Follow-up penawaran</option>
         <option value="csat">Survei CSAT</option>
       </Select>
-      <p class="text-xs text-slate-400">Template lengkap dikelola di <a class="font-semibold text-brand-600" href="/email/templates">Email Templates</a>.</p>
+      <p class="text-xs text-muted-foreground">
+        Template lengkap dikelola di <a href="/email/templates" class="font-semibold text-primary">Email Templates</a>.
+      </p>
     </CardContent>
   </Card>
 </div>

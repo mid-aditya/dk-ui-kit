@@ -5,6 +5,7 @@
   import CardContent from '$lib/components/ui/card-content.svelte';
   import Badge from '$lib/components/ui/badge.svelte';
   import Select from '$lib/components/ui/select.svelte';
+  import Alert from '$lib/components/ui/alert.svelte';
 
   let agent = $state('');
   const rows = [
@@ -13,48 +14,78 @@
     { id: 'i3', customer: 'CV Berkah Abadi', agent: 'Raka Aditya', channel: 'Voice', rating: 3, date: 'Kemarin' }
   ];
   let list = $derived(rows.filter((r) => !agent || r.agent === agent));
+  const getRatingVariant = (r: number) => r >= 4 ? 'success' : r === 3 ? 'warning' : 'destructive';
 </script>
 
 <svelte:head><title>CSAT Interaction — DK UI Kit</title></svelte:head>
 
-<h1 class="text-2xl font-extrabold tracking-tight">CSAT Interaction</h1>
-<p class="mt-0.5 text-sm text-slate-500 dark:text-slate-400">Setiap interaksi yang diberi rating pelanggan.</p>
+<div class="flex items-center justify-between">
+  <div>
+    <h1 class="text-2xl font-extrabold tracking-tight">CSAT Interaction</h1>
+    <p class="mt-0.5 text-sm text-muted-foreground">Setiap interaksi yang diberi rating pelanggan.</p>
+  </div>
+  <Badge variant="success">★ 4.6 rata-rata</Badge>
+</div>
 
-<div class="toolbar mt-3 flex items-center gap-2">
+<!-- Toolbar -->
+<div class="mt-3 flex flex-wrap items-center gap-2">
   <Select bind:value={agent} class="!w-auto">
     <option value="">Semua agent</option>
     <option>Kirana Ayu</option>
     <option>Bimo Prasetyo</option>
     <option>Raka Aditya</option>
   </Select>
-  <Badge>★ rata-rata 4.6</Badge>
 </div>
 
-<Card>
+<!-- Low Rating Alert -->
+{#if list.some(r => r.rating <= 3)}
+  <div class="mt-3">
+    <Alert variant="warning" title="Rating Rendah" dismissible>
+      1 interaksi dengan rating ≤ 3 menunggu callback SPV. Eskalasi otomatis dibuat sebagai tiket.
+    </Alert>
+  </div>
+{/if}
+
+<!-- CSAT Table -->
+<Card class="mt-3">
   <CardContent class="p-0">
-    <table class="w-full text-sm">
-      <thead class="bg-slate-50 text-xs uppercase text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-        <tr><th class="px-3 py-2 text-left">Customer</th><th class="px-3 py-2 text-left">Agent</th><th class="px-3 py-2 text-left">Kanal</th><th class="px-3 py-2 text-left">Rating</th><th class="px-3 py-2 text-left">Waktu</th></tr>
-      </thead>
-      <tbody>
-        {#each list as r}
-          <tr class="border-t border-slate-100 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800">
-            <td class="px-3 py-2 font-medium">{r.customer}</td>
-            <td class="px-3 py-2">{r.agent}</td>
-            <td class="px-3 py-2"><Badge variant="outline">{r.channel}</Badge></td>
-            <td class="px-3 py-2"><Badge variant={r.rating >= 4 ? 'success' : r.rating === 3 ? 'warning' : 'destructive'}>★ {r.rating}</Badge></td>
-            <td class="px-3 py-2 text-xs text-slate-400">{r.date}</td>
+    <div class="overflow-auto rounded-lg border">
+      <table class="w-full text-sm">
+        <thead class="bg-muted text-xs uppercase text-muted-foreground">
+          <tr>
+            <th class="px-4 py-3 text-left font-semibold">Customer</th>
+            <th class="px-4 py-3 text-left font-semibold">Agent</th>
+            <th class="px-4 py-3 text-left font-semibold">Kanal</th>
+            <th class="px-4 py-3 text-left font-semibold">Rating</th>
+            <th class="px-4 py-3 text-left font-semibold">Waktu</th>
           </tr>
-        {/each}
-      </tbody>
-    </table>
-    {#if !list.length}<p class="p-6 text-center text-sm text-slate-400">Tidak ada data.</p>{/if}
+        </thead>
+        <tbody>
+          {#each list as r}
+            <tr class="border-b border-border last:border-0 hover:bg-muted/50">
+              <td class="px-4 py-3 font-medium">{r.customer}</td>
+              <td class="px-4 py-3">{r.agent}</td>
+              <td class="px-4 py-3"><Badge variant="outline">{r.channel}</Badge></td>
+              <td class="px-4 py-3"><Badge variant={getRatingVariant(r.rating)}>★ {r.rating}</Badge></td>
+              <td class="px-4 py-3 text-xs text-muted-foreground">{r.date}</td>
+            </tr>
+          {:else}
+            <tr>
+              <td colspan="5" class="px-4 py-8 text-center text-muted-foreground">Tidak ada data.</td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
   </CardContent>
 </Card>
 
-<div class="mt-3">
-  <Card>
-    <CardHeader><CardTitle>Tindak lanjut rating rendah</CardTitle></CardHeader>
-    <CardContent class="text-sm text-slate-500">1 interaksi rating ≤ 3 menunggu callback SPV. Eskalasi otomatis dibuat sebagai tiket.</CardContent>
-  </Card>
-</div>
+<!-- Info Card -->
+<Card class="mt-3">
+  <CardHeader><CardTitle>Tindak lanjut rating rendah</CardTitle></CardHeader>
+  <CardContent>
+    <Alert variant="info">
+      Interaksi dengan rating ≤ 3 akan otomatis dibuatkan tiket eskalasi untuk ditindaklanjuti oleh SPV.
+    </Alert>
+  </CardContent>
+</Card>
