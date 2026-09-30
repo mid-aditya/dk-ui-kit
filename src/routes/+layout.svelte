@@ -68,6 +68,26 @@
   function isActive(to: string) {
     return to === '/home' ? path === '/home' || path === '/' : path === to || path.startsWith(to + '/');
   }
+
+  const pageTitles: Record<string, string> = {
+    '/home': 'Home',
+    '/threads': 'Threads',
+    '/chat/v3': 'Chat',
+    '/ticketing': 'Ticketing',
+    '/email': 'Email',
+    '/spv': 'SPV',
+    '/recordings': 'Recordings',
+    '/recording-archive': 'Recording Archive',
+    '/agent-schedule': 'Agent Schedule',
+    '/work-calendar': 'Work Calendar',
+    '/report': 'Report',
+    '/report/csat': 'CSAT',
+    '/report/csat-interaction': 'CSAT Interaction',
+    '/agent/performance': 'Agent Performance',
+    '/agent-productivity-dashboard': 'Productivity',
+    '/settings': 'Settings'
+  };
+  let pageTitle = $derived(pageTitles[path] ?? 'DK CRM');
 </script>
 
 <div class="flex h-screen overflow-hidden bg-background text-foreground">
@@ -167,7 +187,7 @@
     <header class="shrink-0 z-30 flex items-center gap-2 border-b bg-background px-4 py-3 md:px-6">
       <button class="md:hidden" onclick={() => (mobileOpen = true)} aria-label="Buka menu"><Menu size={20} /></button>
       <div class="font-bold md:hidden">DK CRM</div>
-      <div class="hidden text-sm text-muted-foreground md:block">Omnichannel · Chat · Tiket · Email · CSAT</div>
+      <div class="hidden text-sm font-medium text-foreground md:block">{pageTitle}</div>
       <div class="flex-1"></div>
       <button onclick={toggleTheme} title="Dark / Light" class="inline-flex h-9 items-center gap-1.5 rounded-lg border bg-background px-3 text-sm font-semibold shadow-sm hover:bg-accent">
         {#if $darkMode}<Sun size={16} />{:else}<Moon size={16} />{/if}
