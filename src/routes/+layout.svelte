@@ -78,7 +78,7 @@
 			subs: [
 				{ to: "/agent-schedule", label: "Agent Schedule", icon: CalendarDays },
 				{ to: "/work-calendar", label: "Work Calendar", icon: CalendarRange },
-				{ to: "/work-calendar", label: "Operational Hours", icon: Clock }
+				{ to: "/operational-hours", label: "Operational Hours", icon: Clock }
 			]
 		}
 	];
@@ -180,7 +180,8 @@
 		"/report": "Report",
 		"/settings": "Settings",
 		"/agent-schedule": "Agent Schedule",
-		"/work-calendar": "Work Calendar"
+		"/work-calendar": "Work Calendar",
+		"/operational-hours": "Operational Hours"
 	};
 	let pageTitle = $derived(pageTitles[page.url.pathname] ?? "DK CRM");
 </script>

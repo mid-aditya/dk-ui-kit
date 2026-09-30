@@ -82,10 +82,10 @@
 		<section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Statistik kanal">
 			{#each channels as c}
 				<Card.Root class={cn('transition-shadow hover:shadow-md', c.key === 'wa' && 'border-primary/40')}>
-					<Card.Header class="flex-row items-center gap-3">
+					<Card.Header class="flex flex-row items-center gap-3">
 						<div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"><c.icon data-icon="card" /></div>
-						<div class="min-w-0 flex-1"><Card.Title class="truncate text-base">{c.label}</Card.Title><Card.Description>Total: {c.total}</Card.Description></div>
-						<Tooltip.Root><Tooltip.Trigger><Badge variant="secondary">Aktif</Badge></Tooltip.Trigger><Tooltip.Content>Kanal terhubung</Tooltip.Content></Tooltip.Root>
+						<div class="min-w-0 flex-1"><Card.Title class="truncate text-base">{c.label}</Card.Title><Card.Description class="truncate">Total: {c.total}</Card.Description></div>
+						<Tooltip.Root><Tooltip.Trigger class="shrink-0"><Badge variant="secondary" class="shrink-0 whitespace-nowrap">Aktif</Badge></Tooltip.Trigger><Tooltip.Content>Kanal terhubung</Tooltip.Content></Tooltip.Root>
 					</Card.Header>
 					<Card.Content class="flex flex-col gap-2 text-sm">
 						<div class="flex items-center justify-between gap-2"><span class="text-muted-foreground">Respons</span><span class="font-medium">{c.answered}</span></div>

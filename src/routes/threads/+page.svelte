@@ -14,8 +14,10 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Empty from '$lib/components/ui/empty';
 	import { Skeleton } from '$lib/components/ui/skeleton';
+	import DateRangePicker from '$lib/components/ui/date-range-picker.svelte';
 	import { toast } from 'svelte-sonner';
 	import { Search, Filter } from 'lucide-svelte';
+	import type { DateRange } from 'bits-ui';
 
 	const rows = [
 		{ id: 1, user: 'Budi Santoso', agent: 'Agent Rina', channel: 'Chat', preview: 'Paket belum sampai…', date: '2026-09-28', count: 12 },
@@ -24,6 +26,7 @@
 	];
 	let q = $state('');
 	let loading = $state(false);
+	let range = $state<DateRange | undefined>(undefined);
 	let filtered = $derived(rows.filter((r) => !q || r.user.toLowerCase().includes(q.toLowerCase())));
 	const initials = (n: string) => n.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 	function search() { loading = true; setTimeout(() => { loading = false; toast.success(`Ditemukan ${filtered.length} thread`); }, 600); }
@@ -37,7 +40,7 @@
 			<strong class="text-sm">Filters</strong>
 			<div class="flex flex-1 flex-col gap-2 md:flex-row">
 				<InputGroup.Root class="max-w-md"><InputGroup.Addon><Search class="size-4" /></InputGroup.Addon><InputGroup.Input bind:value={q} placeholder="Search Phone, User or Agent…" /></InputGroup.Root>
-				<InputGroup.Root class="max-w-xs"><InputGroup.Input type="date" /><InputGroup.Text>to</InputGroup.Text><InputGroup.Input type="date" /></InputGroup.Root>
+				<DateRangePicker bind:value={range} label="Pilih rentang tanggal thread" class="max-w-xs" />
 			</div>
 			<Button variant="outline" size="sm" onclick={() => (q = '')}>Clear</Button>
 			<Button size="sm" onclick={search}>Search</Button>

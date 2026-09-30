@@ -19,8 +19,10 @@
   import { Switch } from '$lib/components/ui/switch';
   import { toast, Toaster } from 'svelte-sonner';
   import { ChevronLeft, ChevronRight, Search, Server } from 'lucide-svelte';
+  import DateRangePicker from '$lib/components/ui/date-range-picker.svelte';
+  import type { DateRange } from 'bits-ui';
 
-  let q=$state(''); let start=$state(''); let end=$state(''); let src=$state('all'); let page=$state(1); const perPage=4;
+  let q=$state(''); let range=$state<DateRange|undefined>(undefined); let src=$state('all'); let page=$state(1); const perPage=4;
   let dl:any=$state(null); let only=$state(true); let scope=$state('semua');
   const rows=[
     {id:'NAS-1001',date:'2026-09-28',path:'/nas/rec/1001.wav',size:'2.1 MB'},{id:'NAS-1002',date:'2026-09-27',path:'/nas/rec/1002.wav',size:'1.4 MB'},
@@ -36,10 +38,9 @@
   <Card.Header class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between"><div><Card.Title class="flex items-center gap-2"><Server size={18}/> Recording Archive <Badge variant="secondary">{f.length}</Badge></Card.Title><Card.Description>Kolom blade: File Name/ID, Call Date, Path, Size, Recording, Actions. Cari via phone/recording ID + range tanggal.</Card.Description></div><div class="flex items-center gap-2 text-sm">Hanya ada audio <Switch bind:checked={only}/></div></Card.Header>
   <Card.Content class="flex flex-col gap-4">
     <Tabs.Root value="all"><Tabs.List><Tabs.Trigger value="all">Semua</Tabs.Trigger><Tabs.Trigger value="audio">Ada audio</Tabs.Trigger></Tabs.List></Tabs.Root>
-    <Field.FieldGroup class="grid gap-3 md:grid-cols-4 md:items-end">
+    <Field.FieldGroup class="grid gap-3 md:grid-cols-3 md:items-end">
       <Field.Field><Field.Label>Search Files</Field.Label><InputGroup.Root><InputGroup.Addon><Search size={14}/></InputGroup.Addon><InputGroup.Input bind:value={q} placeholder="phone / recording ID"/></InputGroup.Root></Field.Field>
-      <Field.Field><Field.Label>Start Date</Field.Label><InputGroup.Root><InputGroup.Input type="date" bind:value={start}/></InputGroup.Root></Field.Field>
-      <Field.Field><Field.Label>End Date</Field.Label><InputGroup.Root><InputGroup.Input type="date" bind:value={end}/></InputGroup.Root></Field.Field>
+      <Field.Field><Field.Label>Periode</Field.Label><DateRangePicker bind:value={range} label="Pilih periode arsip"/></Field.Field>
       <Field.Field><Field.Label>Sumber</Field.Label><Select.Root type="single" bind:value={src}><Select.Trigger>{src}</Select.Trigger><Select.Content><Select.Group><Select.GroupHeading>Sumber NAS</Select.GroupHeading><Select.Item value="all" label="Semua"/><Select.Item value="nas1" label="NAS-1"/></Select.Group></Select.Content></Select.Root></Field.Field>
     </Field.FieldGroup>
     <Field.Set class="rounded-lg border p-3"><Field.Legend>Cakupan</Field.Legend><RadioGroup.Root bind:value={scope} class="flex gap-4"><div class="flex items-center gap-2"><RadioGroup.Item value="semua" id="a1"/><label for="a1" class="text-sm">Semua</label></div><div class="flex items-center gap-2"><RadioGroup.Item value="audio" id="a2"/><label for="a2" class="text-sm">Ada audio</label></div></RadioGroup.Root><label class="mt-2 flex items-center gap-2 text-sm"><Checkbox bind:checked={only}/> Sembunyikan tanpa audio</label></Field.Set>

@@ -17,16 +17,18 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as Empty from '$lib/components/ui/empty';
 	import DateRangePicker from "$lib/components/ui/date-range-picker.svelte";
+	import DatePicker from "$lib/components/ui/date-picker.svelte";
 	import { Spinner } from '$lib/components/ui/spinner';
 	import { cn } from '$lib/utils.js';
 	import { Plus, Upload, Search, Pencil, Trash2, CalendarDays, Info, Palmtree } from 'lucide-svelte';
-	import { CalendarDate } from '@internationalized/date';
+	import { CalendarDate, type DateValue } from '@internationalized/date';
 
 	import type { DateRange } from 'bits-ui';
 
 	let year = $state('2026'); let category = $state('all'); let q = $state(''); let tab = $state('daftar');
 	let loading = $state(false); let open = $state(false); let bulk = $state(false);
 	let period = $state<DateRange | undefined>({ start: new CalendarDate(2026, 1, 1), end: new CalendarDate(2026, 12, 31) });
+	let holidayDate = $state<DateValue | undefined>(new CalendarDate(2026, 12, 31));
 	let holidays = $state([
 		{ date: '01 Jan 2026', name: 'Tahun Baru 2026', category: 'Libur Nasional', status: 'Aktif', tmpl: 'Ya' },
 		{ date: '16 Jan 2026', name: 'Isra Mikraj Nabi Muhammad SAW', category: 'Libur Nasional', status: 'Aktif', tmpl: 'Ya' },
@@ -98,6 +100,6 @@
 	<Alert.Root variant="success"><CalendarDays data-icon="alert" /><Alert.Description>Kalender {year} tersinkron dengan perhitungan SLA.</Alert.Description></Alert.Root>
 </div>
 
-<Dialog.Root bind:open><Dialog.Content class="sm:max-w-md"><Dialog.Header><Dialog.Title>Tambah Hari Libur</Dialog.Title><Dialog.Description>Tambahkan hari libur custom ke kalender kerja.</Dialog.Description></Dialog.Header><Field.FieldGroup class="flex flex-col gap-4 py-2"><Field.Field><Field.Label for="hd">Tanggal</Field.Label><Input id="hd" type="date" /></Field.Field><Field.Field><Field.Label for="hn">Nama Hari Libur</Field.Label><Input id="hn" placeholder="Contoh: Hari Kemerdekaan" /></Field.Field></Field.FieldGroup><Dialog.Footer><Button variant="outline" onclick={() => (open = false)}>Batal</Button><Button onclick={save}>Simpan</Button></Dialog.Footer></Dialog.Content></Dialog.Root>
+<Dialog.Root bind:open><Dialog.Content class="sm:max-w-md"><Dialog.Header><Dialog.Title>Tambah Hari Libur</Dialog.Title><Dialog.Description>Tambahkan hari libur custom ke kalender kerja.</Dialog.Description></Dialog.Header><Field.FieldGroup class="flex flex-col gap-4 py-2"><Field.Field><Field.Label>Tanggal</Field.Label><DatePicker bind:value={holidayDate} label="Tanggal hari libur" /></Field.Field><Field.Field><Field.Label for="hn">Nama Hari Libur</Field.Label><Input id="hn" placeholder="Contoh: Hari Kemerdekaan" /></Field.Field></Field.FieldGroup><Dialog.Footer><Button variant="outline" onclick={() => (open = false)}>Batal</Button><Button onclick={save}>Simpan</Button></Dialog.Footer></Dialog.Content></Dialog.Root>
 <Dialog.Root bind:open={bulk}><Dialog.Content class="sm:max-w-md"><Dialog.Header><Dialog.Title>Import Bulk</Dialog.Title><Dialog.Description>Unggah CSV berisi tanggal, nama, dan kategori.</Dialog.Description></Dialog.Header><Dialog.Footer><Button variant="outline" onclick={() => (bulk = false)}>Batal</Button><Button onclick={() => (bulk = false)}>Upload</Button></Dialog.Footer></Dialog.Content></Dialog.Root>
 

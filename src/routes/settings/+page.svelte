@@ -108,9 +108,8 @@
 
 	<div class="flex-1">
 		<Tabs.Root bind:value={tab}>
-			<Tabs.List class="flex-wrap"><Tabs.Trigger value="general">General</Tabs.Trigger><Tabs.Trigger value="email">Email Setting</Tabs.Trigger><Tabs.Trigger value="blasting">Outbound Blasting</Tabs.Trigger><Tabs.Trigger value="form">Form Builder</Tabs.Trigger></Tabs.List>
 
-			<Tabs.Content value="general" class="mt-4">
+			<Tabs.Content value="general" class="mt-0">
 				<Card.Root>
 					<Card.Header class="flex-row items-center justify-between space-y-0"><div><Card.Title>General Settings</Card.Title><p class="mt-1 text-sm text-muted-foreground">Modul perusahaan, user, channel, dan PBX.</p></div><Badge variant="secondary">{generalCards.length} modul</Badge></Card.Header>
 					<Card.Content>
@@ -133,7 +132,7 @@
 				</Card.Root>
 			</Tabs.Content>
 
-			<Tabs.Content value="email" class="mt-4">
+			<Tabs.Content value="email" class="mt-0">
 				<div class="flex flex-col gap-4">
 					<Alert.Root variant="success"><CircleCheck /><Alert.Title>SMTP terhubung</Alert.Title><Alert.Description>Relay utama merespons dalam 240ms. Autoreply {autoreplyOn ? 'aktif' : 'nonaktif'}.</Alert.Description></Alert.Root>
 					<Card.Root>
@@ -159,7 +158,7 @@
 				</div>
 			</Tabs.Content>
 
-			<Tabs.Content value="blasting" class="mt-4">
+			<Tabs.Content value="blasting" class="mt-0">
 				<div class="flex flex-col gap-4">
 					<Card.Root>
 						<Card.Header class="flex-row items-center justify-between space-y-0"><div><Card.Title>Outbound Blasting</Card.Title><p class="mt-1 text-sm text-muted-foreground">Template WA HSM, template email, dan riwayat eksekusi.</p></div>
@@ -212,7 +211,7 @@
 				</div>
 			</Tabs.Content>
 
-			<Tabs.Content value="form" class="mt-4">
+			<Tabs.Content value="form" class="mt-0">
 				<Card.Root>
 					<Card.Header><Card.Title>Form Builder Ticket</Card.Title><p class="text-sm text-muted-foreground">Status, prioritas, kategori, jenis, field, dan komponen.</p></Card.Header>
 					<Card.Content>

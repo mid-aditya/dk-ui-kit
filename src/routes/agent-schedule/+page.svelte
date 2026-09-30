@@ -24,6 +24,7 @@
 
 	let q = $state(''); let status = $state('semua'); let tab = $state('daftar'); let loading = $state(false); let open = $state(false);
 	let date = $state<DateValue | undefined>(new CalendarDate(2026, 9, 30));
+	let newDate = $state<DateValue | undefined>(new CalendarDate(2026, 9, 30));
 	const schedules = [
 		{ date: '30 Sep 2026', agents: 12, channels: ['Omnichannel', 'Inbound Call'], status: 'Terjadwal', cap: 92 },
 		{ date: '01 Okt 2026', agents: 14, channels: ['Omnichannel', 'Email', 'Inbound Call'], status: 'Terjadwal', cap: 96 },
@@ -79,5 +80,5 @@
 	<p class="text-muted-foreground flex items-center gap-1 text-xs"><Info data-icon="inline" /> Channel: Omnichannel, Inbound Call, Email</p>
 </div>
 
-<Dialog.Root bind:open><Dialog.Content class="sm:max-w-md"><Dialog.Header><Dialog.Title>Tambah Jadwal</Dialog.Title><Dialog.Description>Buat jadwal agent baru per tanggal dan channel.</Dialog.Description></Dialog.Header><Field.FieldGroup class="flex flex-col gap-4 py-2"><Field.Field><Field.Label for="d">Tanggal</Field.Label><Input id="d" type="date" /></Field.Field></Field.FieldGroup><Dialog.Footer><Button variant="outline" onclick={() => (open = false)}>Batal</Button><Button onclick={() => (open = false)}>Simpan</Button></Dialog.Footer></Dialog.Content></Dialog.Root>
+<Dialog.Root bind:open><Dialog.Content class="sm:max-w-md"><Dialog.Header><Dialog.Title>Tambah Jadwal</Dialog.Title><Dialog.Description>Buat jadwal agent baru per tanggal dan channel.</Dialog.Description></Dialog.Header><Field.FieldGroup class="flex flex-col gap-4 py-2"><Field.Field><Field.Label>Tanggal</Field.Label><DatePicker bind:value={newDate} label="Tanggal jadwal baru" /></Field.Field></Field.FieldGroup><Dialog.Footer><Button variant="outline" onclick={() => (open = false)}>Batal</Button><Button onclick={() => (open = false)}>Simpan</Button></Dialog.Footer></Dialog.Content></Dialog.Root>
 
