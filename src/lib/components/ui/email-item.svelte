@@ -38,11 +38,13 @@
   }
 </script>
 
-<button
-  type="button"
+<div
+  role="button"
+  tabindex="0"
   onclick={onClick}
+  onkeydown={(e) => e.key === 'Enter' && onClick?.()}
   class={cn(
-    'flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-accent/50',
+    'flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-accent/50 cursor-pointer',
     !read && 'bg-muted/30',
     className
   )}
@@ -90,15 +92,13 @@
     {/if}
   </div>
 
-  <!-- Actions (visible on hover) -->
-  <div class="hidden items-center gap-1 group-hover:flex">
-    <button
-      type="button"
-      onclick={toggleStar}
-      class="rounded p-1 hover:bg-accent"
-      aria-label={isStarred ? 'Remove star' : 'Add star'}
-    >
-      <Star size={16} class={isStarred ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'} />
-    </button>
-  </div>
-</button>
+  <!-- Star button -->
+  <button
+    type="button"
+    onclick={toggleStar}
+    class="shrink-0 rounded p-1 hover:bg-accent"
+    aria-label={isStarred ? 'Remove star' : 'Add star'}
+  >
+    <Star size={16} class={isStarred ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'} />
+  </button>
+</div>
