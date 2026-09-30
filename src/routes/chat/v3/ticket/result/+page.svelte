@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
-  import Button from '$lib/components/ui/button.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  
+  
+  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button';
   import Select from '$lib/components/ui/select.svelte';
 
   let status = $state('');
@@ -33,8 +33,8 @@
 </div>
 
 <!-- Tickets Table -->
-<Card class="mt-3">
-  <CardContent class="p-0">
+<Card.Root class="mt-3">
+  <Card.Content class="p-0">
     <div class="overflow-auto rounded-lg border">
       <table class="w-full text-sm">
         <thead class="bg-muted text-xs uppercase text-muted-foreground">
@@ -65,13 +65,13 @@
         </tbody>
       </table>
     </div>
-  </CardContent>
-</Card>
+  </Card.Content>
+</Card.Root>
 
 <!-- Summary Stats -->
-<Card class="mt-3">
-  <CardHeader><CardTitle>Ringkasan</CardTitle></CardHeader>
-  <CardContent class="flex flex-wrap gap-6 text-sm">
+<Card.Root class="mt-3">
+  <Card.Header><Card.Title>Ringkasan</Card.Title></Card.Header>
+  <Card.Content class="flex flex-wrap gap-6 text-sm">
     <div>
       <div class="text-xs text-muted-foreground">Resolved tepat SLA</div>
       <div class="text-2xl font-extrabold text-emerald-600">86%</div>
@@ -84,5 +84,5 @@
       <div class="text-xs text-muted-foreground">Reopen rate</div>
       <div class="text-2xl font-extrabold text-amber-600">4%</div>
     </div>
-  </CardContent>
-</Card>
+  </Card.Content>
+</Card.Root>

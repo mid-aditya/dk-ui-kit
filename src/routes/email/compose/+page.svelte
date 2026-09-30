@@ -1,12 +1,12 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Button from '$lib/components/ui/button.svelte';
-  import Input from '$lib/components/ui/input.svelte';
-  import Label from '$lib/components/ui/label.svelte';
-  import Textarea from '$lib/components/ui/textarea.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  
+  
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { Textarea } from '$lib/components/ui/textarea';
   import Select from '$lib/components/ui/select.svelte';
   import Alert from '$lib/components/ui/alert.svelte';
 
@@ -37,8 +37,8 @@
 <div class="mt-3 grid gap-3 lg:grid-cols-3">
   <!-- Compose Form -->
   <div class="lg:col-span-2">
-    <Card>
-      <CardContent class="space-y-4 p-5">
+    <Card.Root>
+      <Card.Content class="space-y-4 p-5">
         <!-- To -->
         <div>
           <Label for="em-to">Kepada *</Label>
@@ -69,14 +69,14 @@
           <Button onclick={handleSend} disabled={!to.trim() || !subject.trim()}>Kirim</Button>
           <Button variant="secondary" href="/email?status=draft">Simpan draft</Button>
         </div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
   </div>
 
   <!-- Template Sidebar -->
-  <Card>
-    <CardHeader><CardTitle>Dari template</CardTitle></CardHeader>
-    <CardContent class="space-y-4">
+  <Card.Root>
+    <Card.Header><Card.Title>Dari template</Card.Title></Card.Header>
+    <Card.Content class="space-y-4">
       <Select bind:value={template} onchange={useTemplate} options={[
         { value: '', label: 'Pilih template…' },
         { value: 'followup', label: 'Follow-up penawaran' },
@@ -85,6 +85,6 @@
       <p class="text-xs text-muted-foreground">
         Template lengkap dikelola di <a href="/email/templates" class="font-semibold text-primary">Email Templates</a>.
       </p>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 </div>

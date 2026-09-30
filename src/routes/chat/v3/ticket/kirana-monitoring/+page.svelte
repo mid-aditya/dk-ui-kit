@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
-  import Progress from '$lib/components/ui/progress.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  
+  
+  import { Badge } from '$lib/components/ui/badge';
+  import { Progress } from '$lib/components/ui/progress';
   import { Radio } from 'lucide-svelte';
 
   const stats = [
@@ -38,21 +38,21 @@
 <!-- Stats Cards -->
 <div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
   {#each stats as s}
-    <Card class="hover:shadow-md transition-shadow">
-      <CardContent class="p-4">
+    <Card.Root class="hover:shadow-md transition-shadow">
+      <Card.Content class="p-4">
         <div class="text-xs font-medium text-muted-foreground">{s.label}</div>
         <div class="mt-1 text-2xl font-extrabold">{s.value}</div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
   {/each}
 </div>
 
 <!-- Content Grid -->
 <div class="mt-3 grid gap-3 lg:grid-cols-2">
   <!-- Queue per Channel -->
-  <Card>
-    <CardHeader><CardTitle>Antrian per kanal</CardTitle></CardHeader>
-    <CardContent class="space-y-4">
+  <Card.Root>
+    <Card.Header><Card.Title>Antrian per kanal</Card.Title></Card.Header>
+    <Card.Content class="space-y-4">
       {#each queues as q}
         <div>
           <div class="mb-2 flex justify-between text-sm">
@@ -62,19 +62,19 @@
           <Progress value={(q.value / 5) * 100} />
         </div>
       {/each}
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 
   <!-- Live Agents -->
-  <Card>
-    <CardHeader><CardTitle>Agent sedang live</CardTitle></CardHeader>
-    <CardContent class="space-y-3">
+  <Card.Root>
+    <Card.Header><Card.Title>Agent sedang live</Card.Title></Card.Header>
+    <Card.Content class="space-y-3">
       {#each agents as a}
         <div class="flex items-center justify-between border-b border-border pb-3 last:border-0 last:pb-0">
           <span class="font-medium">{a.name}</span>
-          <Badge variant={a.badge}>{a.status}</Badge>
+          <Badge variant={a.badge as 'default' | 'secondary' | 'destructive' | 'success' | 'warning' | 'outline' | 'ghost' | 'link'}>{a.status}</Badge>
         </div>
       {/each}
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 </div>

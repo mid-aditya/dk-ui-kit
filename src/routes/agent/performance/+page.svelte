@@ -1,11 +1,11 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  
+  
+  import { Badge } from '$lib/components/ui/badge';
   import Avatar from '$lib/components/ui/avatar.svelte';
-  import Progress from '$lib/components/ui/progress.svelte';
+  import { Progress } from '$lib/components/ui/progress';
   import { agents } from '$lib/mock';
 
   let ranked = $derived([...agents].sort((a, b) => b.csat * 20 + b.chats - (a.csat * 20 + a.chats)));
@@ -18,8 +18,8 @@
 <div></div>
 
 <!-- Performance Table -->
-<Card class="mt-3">
-  <CardContent class="p-0">
+<Card.Root class="mt-3">
+  <Card.Content class="p-0">
     <div class="overflow-auto rounded-lg border">
       <table class="w-full text-sm">
         <thead class="bg-muted text-xs uppercase text-muted-foreground">
@@ -46,7 +46,7 @@
               </td>
               <td class="px-4 py-3 text-right">{a.chats}</td>
               <td class="px-4 py-3 text-right">{a.tickets}</td>
-              <td class="px-4 py-3 text-right font-bold text-primary">★ {a.csat}</td>
+              <td class="px-4 py-3 text-right font-bold text-primary">{a.csat >= 4.7 ? "😊" : a.csat >= 4.5 ? "😐" : "😞"} {a.csat}</td>
               <td class="px-4 py-3"><Progress value={(a.chats / maxChats) * 100} class="w-28" /></td>
               <td class="px-4 py-3"><Badge variant={statusVariant(a.status)}>{a.status}</Badge></td>
             </tr>
@@ -54,14 +54,14 @@
         </tbody>
       </table>
     </div>
-  </CardContent>
-</Card>
+  </Card.Content>
+</Card.Root>
 
 <!-- Top & Bottom Performers -->
 <div class="mt-3 grid gap-3 md:grid-cols-2">
-  <Card>
-    <CardHeader><CardTitle>Top CSAT minggu ini</CardTitle></CardHeader>
-    <CardContent>
+  <Card.Root>
+    <Card.Header><Card.Title>Top CSAT minggu ini</Card.Title></Card.Header>
+    <Card.Content>
       <div class="flex items-center gap-3">
         <Avatar name="Sinta Maharani" />
         <div>
@@ -69,11 +69,11 @@
           <div class="text-sm text-muted-foreground">4.9 dari 87 survei</div>
         </div>
       </div>
-    </CardContent>
-  </Card>
-  <Card>
-    <CardHeader><CardTitle>Butuh coaching</CardTitle></CardHeader>
-    <CardContent>
+    </Card.Content>
+  </Card.Root>
+  <Card.Root>
+    <Card.Header><Card.Title>Butuh coaching</Card.Title></Card.Header>
+    <Card.Content>
       <div class="flex items-center gap-3">
         <Avatar name="Raka Aditya" />
         <div>
@@ -81,6 +81,6 @@
           <div class="text-sm text-muted-foreground">CSAT 4.4 · tren turun 0.2</div>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 </div>

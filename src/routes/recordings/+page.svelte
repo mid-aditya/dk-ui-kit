@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
-  import Button from '$lib/components/ui/button.svelte';
-  import Input from '$lib/components/ui/input.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
   import { recordings } from '$lib/mock';
   import { Play, Pause } from 'lucide-svelte';
 
@@ -22,8 +22,8 @@
 </div>
 
 <!-- Recordings List -->
-<Card class="mt-3">
-  <CardContent class="divide-y divide-border p-0">
+<Card.Root class="mt-3">
+  <Card.Content class="divide-y divide-border p-0">
     {#each list as r}
       <div class="flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors">
         <!-- Play Button -->
@@ -66,5 +66,5 @@
         Tidak ada rekaman.
       </div>
     {/each}
-  </CardContent>
-</Card>
+  </Card.Content>
+</Card.Root>

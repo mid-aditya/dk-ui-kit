@@ -1,8 +1,8 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import Card from '$lib/components/ui/card.svelte';
-  import Button from '$lib/components/ui/button.svelte';
-  import Input from '$lib/components/ui/input.svelte';
+  import * as Card from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
   import Tabs from '$lib/components/ui/tabs.svelte';
   import EmailItem from '$lib/components/ui/email-item.svelte';
   import { emails } from '$lib/mock';
@@ -45,7 +45,7 @@
 </div>
 
 <!-- Email List -->
-<Card class="mt-3">
+<Card.Root class="mt-3">
   <div class="divide-y divide-border">
     {#each list as e}
       <EmailItem
@@ -66,4 +66,4 @@
       </div>
     {/each}
   </div>
-</Card>
+</Card.Root>

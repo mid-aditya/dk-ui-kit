@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
-  import Button from '$lib/components/ui/button.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  
+  
+  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button';
   import Alert from '$lib/components/ui/alert.svelte';
   import { emails } from '$lib/mock';
 
@@ -21,8 +21,8 @@
 </Alert>
 
 <!-- History Table -->
-<Card class="mt-3">
-  <CardContent class="p-0">
+<Card.Root class="mt-3">
+  <Card.Content class="p-0">
     <div class="overflow-auto rounded-lg border">
       <table class="w-full text-sm">
         <thead class="bg-muted text-xs uppercase text-muted-foreground">
@@ -49,15 +49,15 @@
         </tbody>
       </table>
     </div>
-  </CardContent>
-</Card>
+  </Card.Content>
+</Card.Root>
 
 <!-- Export Info -->
-<Card class="mt-3">
-  <CardHeader><CardTitle>Ekspor</CardTitle></CardHeader>
-  <CardContent>
+<Card.Root class="mt-3">
+  <Card.Header><Card.Title>Ekspor</Card.Title></Card.Header>
+  <Card.Content>
     <p class="text-sm text-muted-foreground">
       Unduh history dalam format CSV untuk keperluan audit. Periode default adalah 30 hari terakhir.
     </p>
-  </CardContent>
-</Card>
+  </Card.Content>
+</Card.Root>

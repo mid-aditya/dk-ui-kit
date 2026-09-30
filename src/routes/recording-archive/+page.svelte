@@ -1,12 +1,12 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  
+  
+  import { Badge } from '$lib/components/ui/badge';
   import Select from '$lib/components/ui/select.svelte';
   import Calendar from '$lib/components/ui/calendar.svelte';
-  import Button from '$lib/components/ui/button.svelte';
+  import { Button } from '$lib/components/ui/button';
   import Alert from '$lib/components/ui/alert.svelte';
   import { recordings } from '$lib/mock';
 
@@ -25,7 +25,7 @@
     { value: '30', label: '30 hari terakhir' },
     { value: '90', label: '90 hari terakhir' }
   ]} />
-  <Calendar bind:value={selectedDate} />
+  <Calendar value={selectedDate} />
 </div>
 
 <!-- Retention Policy Alert -->
@@ -34,8 +34,8 @@
 </Alert>
 
 <!-- Archive Table -->
-<Card class="mt-3">
-  <CardContent class="p-0">
+<Card.Root class="mt-3">
+  <Card.Content class="p-0">
     <div class="overflow-auto rounded-lg border">
       <table class="w-full text-sm">
         <thead class="bg-muted text-xs uppercase text-muted-foreground">
@@ -60,5 +60,5 @@
         </tbody>
       </table>
     </div>
-  </CardContent>
-</Card>
+  </Card.Content>
+</Card.Root>

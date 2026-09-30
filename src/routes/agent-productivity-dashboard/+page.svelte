@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
-  import Progress from '$lib/components/ui/progress.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  
+  
+  import { Badge } from '$lib/components/ui/badge';
+  import { Progress } from '$lib/components/ui/progress';
   import { agents } from '$lib/mock';
 
   const stats = [
@@ -26,21 +26,21 @@
 <!-- Stats Cards -->
 <div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
   {#each stats as s}
-    <Card class="hover:shadow-md transition-shadow">
-      <CardContent class="p-4">
+    <Card.Root class="hover:shadow-md transition-shadow">
+      <Card.Content class="p-4">
         <div class="text-xs font-medium text-muted-foreground">{s.label}</div>
         <div class="mt-1 text-2xl font-extrabold">{s.value}</div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
   {/each}
 </div>
 
 <!-- Charts Row -->
 <div class="mt-3 grid gap-3 lg:grid-cols-2">
   <!-- Hourly Load Chart -->
-  <Card>
-    <CardHeader><CardTitle>Beban percakapan per jam</CardTitle></CardHeader>
-    <CardContent>
+  <Card.Root>
+    <Card.Header><Card.Title>Beban percakapan per jam</Card.Title></Card.Header>
+    <Card.Content>
       <div class="flex h-36 items-end gap-2">
         {#each hours as h, i}
           <div class="flex flex-1 flex-col items-center gap-1">
@@ -54,13 +54,13 @@
           </div>
         {/each}
       </div>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 
   <!-- Agent Status -->
-  <Card>
-    <CardHeader><CardTitle>Status agent saat ini</CardTitle></CardHeader>
-    <CardContent class="space-y-3">
+  <Card.Root>
+    <Card.Header><Card.Title>Status agent saat ini</Card.Title></Card.Header>
+    <Card.Content class="space-y-3">
       {#each agents as a}
         <div class="flex items-center justify-between">
           <span class="font-medium">{a.name}</span>
@@ -72,14 +72,14 @@
           </div>
         </div>
       {/each}
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 </div>
 
 <!-- Productivity vs Target -->
-<Card class="mt-3">
-  <CardHeader><CardTitle>Produktivitas vs target</CardTitle></CardHeader>
-  <CardContent class="space-y-4">
+<Card.Root class="mt-3">
+  <Card.Header><Card.Title>Produktivitas vs target</Card.Title></Card.Header>
+  <Card.Content class="space-y-4">
     {#each agents as a}
       <div>
         <div class="mb-2 flex justify-between text-sm">
@@ -89,5 +89,5 @@
         <Progress value={((a.chats + a.tickets) / 30) * 100} />
       </div>
     {/each}
-  </CardContent>
-</Card>
+  </Card.Content>
+</Card.Root>

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  
+  
+  import { Badge } from '$lib/components/ui/badge';
   import Select from '$lib/components/ui/select.svelte';
   import Alert from '$lib/components/ui/alert.svelte';
 
@@ -41,8 +41,8 @@
 {/if}
 
 <!-- CSAT Table -->
-<Card class="mt-3">
-  <CardContent class="p-0">
+<Card.Root class="mt-3">
+  <Card.Content class="p-0">
     <div class="overflow-auto rounded-lg border">
       <table class="w-full text-sm">
         <thead class="bg-muted text-xs uppercase text-muted-foreground">
@@ -60,7 +60,7 @@
               <td class="px-4 py-3 font-medium">{r.customer}</td>
               <td class="px-4 py-3">{r.agent}</td>
               <td class="px-4 py-3"><Badge variant="outline">{r.channel}</Badge></td>
-              <td class="px-4 py-3"><Badge variant={getRatingVariant(r.rating)}>★ {r.rating}</Badge></td>
+              <td class="px-4 py-3"><Badge variant={getRatingVariant(r.rating)}>{r.rating >= 4 ? "😊" : r.rating === 3 ? "😐" : "😞"} {r.rating}</Badge></td>
               <td class="px-4 py-3 text-xs text-muted-foreground">{r.date}</td>
             </tr>
           {:else}
@@ -71,15 +71,15 @@
         </tbody>
       </table>
     </div>
-  </CardContent>
-</Card>
+  </Card.Content>
+</Card.Root>
 
 <!-- Info Card -->
-<Card class="mt-3">
-  <CardHeader><CardTitle>Tindak lanjut rating rendah</CardTitle></CardHeader>
-  <CardContent>
+<Card.Root class="mt-3">
+  <Card.Header><Card.Title>Tindak lanjut rating rendah</Card.Title></Card.Header>
+  <Card.Content>
     <Alert variant="info">
       Interaksi dengan rating ≤ 3 akan otomatis dibuatkan tiket eskalasi untuk ditindaklanjuti oleh SPV.
     </Alert>
-  </CardContent>
-</Card>
+  </Card.Content>
+</Card.Root>

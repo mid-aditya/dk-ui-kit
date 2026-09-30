@@ -58,7 +58,7 @@
   };
 
   const config = $derived(variantConfig[variant]);
-  const Icon = config.icon;
+  const Icon = $derived(config.icon);
 </script>
 
 {#if visible}

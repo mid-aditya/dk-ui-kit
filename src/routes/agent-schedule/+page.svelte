@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
-  import Button from '$lib/components/ui/button.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  
+  
+  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button';
   import Avatar from '$lib/components/ui/avatar.svelte';
   import { agents, schedule } from '$lib/mock';
 </script>
@@ -15,9 +15,9 @@
 
 <div class="mt-3 grid gap-3 lg:grid-cols-2">
   <!-- Shift Schedule -->
-  <Card>
-    <CardHeader><CardTitle>Jadwal shift</CardTitle></CardHeader>
-    <CardContent class="space-y-3">
+  <Card.Root>
+    <Card.Header><Card.Title>Jadwal shift</Card.Title></Card.Header>
+    <Card.Content class="space-y-3">
       {#each schedule as s}
         <div class="flex items-center justify-between rounded-lg border border-border p-3">
           <div class="flex items-center gap-3">
@@ -27,13 +27,13 @@
           <Badge>{s.agents} agent</Badge>
         </div>
       {/each}
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 
   <!-- Today's Agents -->
-  <Card>
-    <CardHeader><CardTitle>Agent bertugas hari ini</CardTitle></CardHeader>
-    <CardContent class="space-y-3">
+  <Card.Root>
+    <Card.Header><Card.Title>Agent bertugas hari ini</Card.Title></Card.Header>
+    <Card.Content class="space-y-3">
       {#each agents as a}
         <div class="flex items-center justify-between border-b border-border pb-3 last:border-0 last:pb-0">
           <div class="flex items-center gap-3">
@@ -43,6 +43,6 @@
           <Badge variant={a.status === 'online' ? 'success' : 'secondary'}>{a.status}</Badge>
         </div>
       {/each}
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 </div>

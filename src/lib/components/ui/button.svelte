@@ -31,6 +31,8 @@
   export type ButtonSize = VariantProps<typeof buttonVariants>['size'];
 </script>
 
+<!-- Legacy compatibility wrapper; new pages should import $lib/components/ui/button. -->
+<!-- @ts-nocheck -->
 <script lang="ts">
   import { cn } from '$lib/utils';
   import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
-  import Button from '$lib/components/ui/button.svelte';
-  import Progress from '$lib/components/ui/progress.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  
+  
+  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button';
+  import { Progress } from '$lib/components/ui/progress';
   import Alert from '$lib/components/ui/alert.svelte';
   import { MessagesSquare, Ticket, Star, Users } from 'lucide-svelte';
 
@@ -30,37 +30,37 @@
 <!-- Stats Cards -->
 <div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
   {#each stats as s}
-    <Card class="hover:shadow-md transition-shadow cursor-pointer">
-      <CardContent class="p-4">
+    <Card.Root class="hover:shadow-md transition-shadow cursor-pointer">
+      <Card.Content class="p-4">
         <div class="flex items-center gap-2 text-xs font-medium text-muted-foreground">
           <s.icon size={15} class="text-primary" />{s.label}
         </div>
         <div class="mt-1 text-2xl font-extrabold tracking-tight">{s.value}</div>
         <div class="text-[11px] text-muted-foreground">{s.hint}</div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
   {/each}
 </div>
 
 <!-- Content Grid -->
 <div class="mt-3 grid gap-3 lg:grid-cols-2">
   <!-- Channel Stats -->
-  <Card>
-    <CardHeader><CardTitle>Kanal paling ramai</CardTitle></CardHeader>
-    <CardContent class="space-y-3">
+  <Card.Root>
+    <Card.Header><Card.Title>Kanal paling ramai</Card.Title></Card.Header>
+    <Card.Content class="space-y-3">
       {#each [{ c: 'WhatsApp', v: 82 }, { c: 'Email', v: 46 }, { c: 'Telegram', v: 24 }, { c: 'Voice', v: 12 }] as k}
         <div>
           <div class="mb-1 flex justify-between text-sm"><span class="font-medium">{k.c}</span><span class="text-muted-foreground">{k.v}</span></div>
           <Progress value={k.v} />
         </div>
       {/each}
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 
   <!-- Alerts Section -->
-  <Card>
-    <CardHeader><CardTitle>Perlu perhatian</CardTitle></CardHeader>
-    <CardContent class="space-y-2">
+  <Card.Root>
+    <Card.Header><Card.Title>Perlu perhatian</Card.Title></Card.Header>
+    <Card.Content class="space-y-2">
       {#each alerts as alert}
         <Alert variant={alert.type} dismissible>
           {alert.text}
@@ -70,20 +70,20 @@
         <Button href="/chat/v3" size="sm">Buka chat</Button>
         <Button href="/ticketing" size="sm" variant="secondary">Lihat tiket</Button>
       </div>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 </div>
 
 <!-- Recent Tickets -->
 <div class="mt-3">
-  <Card>
-    <CardHeader>
+  <Card.Root>
+    <Card.Header>
       <div class="flex items-center justify-between">
-        <CardTitle>Tiket terbaru</CardTitle>
+        <Card.Title>Tiket terbaru</Card.Title>
         <Badge>3 open</Badge>
       </div>
-    </CardHeader>
-    <CardContent>
+    </Card.Header>
+    <Card.Content>
       <div class="overflow-auto rounded-lg border">
         <table class="w-full text-sm">
           <tbody>
@@ -97,6 +97,6 @@
           </tbody>
         </table>
       </div>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 </div>

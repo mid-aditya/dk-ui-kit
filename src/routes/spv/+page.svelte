@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
-  import Button from '$lib/components/ui/button.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  
+  
+  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button';
   import Avatar from '$lib/components/ui/avatar.svelte';
   import Alert from '$lib/components/ui/alert.svelte';
   import { agents } from '$lib/mock';
@@ -29,21 +29,21 @@
 <!-- Stats Cards -->
 <div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
   {#each stats as s}
-    <Card class="hover:shadow-md transition-shadow">
-      <CardContent class="p-4">
+    <Card.Root class="hover:shadow-md transition-shadow">
+      <Card.Content class="p-4">
         <div class="text-xs font-medium text-muted-foreground">{s.label}</div>
         <div class="mt-1 text-2xl font-extrabold">{s.value}</div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
   {/each}
 </div>
 
 <!-- Content Grid -->
 <div class="mt-3 grid gap-3 lg:grid-cols-2">
   <!-- Escalations -->
-  <Card>
-    <CardHeader><CardTitle>Eskalasi menunggu</CardTitle></CardHeader>
-    <CardContent class="space-y-3">
+  <Card.Root>
+    <Card.Header><Card.Title>Eskalasi menunggu</Card.Title></Card.Header>
+    <Card.Content class="space-y-3">
       {#each escalations as e}
         <div class="flex items-center justify-between rounded-lg border border-border p-3">
           <div class="flex items-center gap-2">
@@ -64,13 +64,13 @@
       {:else}
         <p class="text-sm text-muted-foreground">Tidak ada eskalasi.</p>
       {/each}
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 
   <!-- Agent Monitoring -->
-  <Card>
-    <CardHeader><CardTitle>Agent dalam pantauan</CardTitle></CardHeader>
-    <CardContent class="space-y-3">
+  <Card.Root>
+    <Card.Header><Card.Title>Agent dalam pantauan</Card.Title></Card.Header>
+    <Card.Content class="space-y-3">
       {#each agents.slice(0, 3) as a}
         <div class="flex items-center justify-between border-b border-border pb-3 last:border-0 last:pb-0">
           <div class="flex items-center gap-3">
@@ -83,8 +83,8 @@
           </div>
         </div>
       {/each}
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 </div>
 
 <!-- Info Alert -->

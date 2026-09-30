@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  
+  
+  import { Badge } from '$lib/components/ui/badge';
 
   const days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
   // 1 = libur nasional/cuti bersama, 2 = shift penuh, 3 = shift terbatas, 0 = tutup
@@ -40,14 +40,14 @@
 </div>
 
 <!-- Calendar -->
-<Card class="mt-3">
-  <CardHeader>
+<Card.Root class="mt-3">
+  <Card.Header>
     <div class="flex items-center justify-between">
-      <CardTitle>September 2026</CardTitle>
+      <Card.Title>September 2026</Card.Title>
       <Badge>28 hari operasional</Badge>
     </div>
-  </CardHeader>
-  <CardContent>
+  </Card.Header>
+  <Card.Content>
     <!-- Weekday Headers -->
     <div class="grid grid-cols-7 gap-1.5 text-center text-[11px] font-semibold uppercase text-muted-foreground">
       {#each days as d}
@@ -65,5 +65,5 @@
         </div>
       {/each}
     </div>
-  </CardContent>
-</Card>
+  </Card.Content>
+</Card.Root>

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
-  import Button from '$lib/components/ui/button.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button';
   import { emails } from '$lib/mock';
 
   let list = $derived(emails.filter((e) => e.status === 'send'));
@@ -13,8 +13,8 @@
 <div></div>
 
 <!-- Sent Emails List -->
-<Card class="mt-3">
-  <CardContent class="divide-y divide-border p-0">
+<Card.Root class="mt-3">
+  <Card.Content class="divide-y divide-border p-0">
     {#each list as e}
       <div class="flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors">
         <!-- Icon -->
@@ -43,5 +43,5 @@
         <Button href="/email/compose" size="sm" class="mt-2">Tulis email baru</Button>
       </div>
     {/each}
-  </CardContent>
-</Card>
+  </Card.Content>
+</Card.Root>

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Button from '$lib/components/ui/button.svelte';
+  import * as Card from '$lib/components/ui/card';
+  
+  
+  
+  import { Button } from '$lib/components/ui/button';
 
   const reports = [
     { title: 'CSAT', description: 'Skor & distribusi kepuasan pelanggan.', to: '/report/csat', icon: 'star' },
@@ -22,14 +22,14 @@
 <!-- Reports Grid -->
 <div class="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
   {#each reports as r}
-    <Card class="hover:shadow-md transition-shadow">
-      <CardHeader>
-        <CardTitle>{r.title}</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <Card.Root class="hover:shadow-md transition-shadow">
+      <Card.Header>
+        <Card.Title>{r.title}</Card.Title>
+      </Card.Header>
+      <Card.Content>
         <p class="text-sm text-muted-foreground">{r.description}</p>
         <Button href={r.to} size="sm" variant="secondary" class="mt-4 w-full">Buka laporan</Button>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
   {/each}
 </div>

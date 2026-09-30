@@ -1,15 +1,10 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/card.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
-  import Button from '$lib/components/ui/button.svelte';
-  import Input from '$lib/components/ui/input.svelte';
-  import Avatar from '$lib/components/ui/avatar.svelte';
-  import DropdownMenu from '$lib/components/ui/dropdown-menu.svelte';
-  import DropdownMenuItem from '$lib/components/ui/dropdown-menu-item.svelte';
-  import DropdownMenuSeparator from '$lib/components/ui/dropdown-menu-separator.svelte';
+  import * as Card from '$lib/components/ui/card';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import * as Avatar from '$lib/components/ui/avatar';
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { threads } from '$lib/mock';
 
   let q = $state('');
@@ -19,6 +14,8 @@
     )
   );
   const badge = (s: string) => (s === 'open' ? 'success' : s === 'pending' ? 'warning' : 'secondary');
+  const initials = (name: string) =>
+    name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 </script>
 
 <svelte:head><title>Threads — DK UI Kit</title></svelte:head>
@@ -29,27 +26,33 @@
   <div class="w-full max-w-xs">
     <Input bind:value={q} placeholder="Cari customer / pesan…" />
   </div>
-  
+
   <!-- Filter Dropdown -->
-  <DropdownMenu>
-    {#snippet trigger()}
-      <Button size="sm" variant="outline">Filter</Button>
-    {/snippet}
-    <DropdownMenuItem>Semua</DropdownMenuItem>
-    <DropdownMenuItem>WhatsApp</DropdownMenuItem>
-    <DropdownMenuItem>Email</DropdownMenuItem>
-    <DropdownMenuSeparator />
-    <DropdownMenuItem>Belum dibaca</DropdownMenuItem>
-    <DropdownMenuItem>Assigned ke saya</DropdownMenuItem>
-  </DropdownMenu>
+  <DropdownMenu.Root>
+    <DropdownMenu.Trigger>
+      {#snippet child({ props })}
+        <Button size="sm" variant="outline" {...props}>Filter</Button>
+      {/snippet}
+    </DropdownMenu.Trigger>
+    <DropdownMenu.Content>
+      <DropdownMenu.Item>Semua</DropdownMenu.Item>
+      <DropdownMenu.Item>WhatsApp</DropdownMenu.Item>
+      <DropdownMenu.Item>Email</DropdownMenu.Item>
+      <DropdownMenu.Separator />
+      <DropdownMenu.Item>Belum dibaca</DropdownMenu.Item>
+      <DropdownMenu.Item>Assigned ke saya</DropdownMenu.Item>
+    </DropdownMenu.Content>
+  </DropdownMenu.Root>
 </div>
 
 <!-- Threads List -->
-<Card class="mt-3">
-  <CardContent class="divide-y divide-border p-0">
-    {#each filtered as t}
+<Card.Root class="mt-3">
+  <Card.Content class="divide-y divide-border p-0">
+    {#each filtered as t (t.customer)}
       <a href="/chat/v3" class="flex items-center gap-3 p-4 hover:bg-muted/50 transition-colors">
-        <Avatar name={t.customer} />
+        <Avatar.Root>
+          <Avatar.Fallback>{initials(t.customer)}</Avatar.Fallback>
+        </Avatar.Root>
         <span class="min-w-0 flex-1">
           <span class="flex justify-between gap-2">
             <strong class="truncate text-sm">{t.customer}</strong>
@@ -72,19 +75,21 @@
         Tidak ada hasil pencarian.
       </div>
     {/each}
-  </CardContent>
-</Card>
+  </Card.Content>
+</Card.Root>
 
 <!-- Quick Filters -->
 <div class="mt-3">
-  <Card>
-    <CardHeader><CardTitle>Filter cepat</CardTitle></CardHeader>
-    <CardContent class="flex flex-wrap gap-2">
+  <Card.Root>
+    <Card.Header>
+      <Card.Title>Filter cepat</Card.Title>
+    </Card.Header>
+    <Card.Content class="flex flex-wrap gap-2">
       <Button size="sm" variant="secondary">Semua</Button>
       <Button size="sm" variant="secondary">WhatsApp</Button>
       <Button size="sm" variant="secondary">Email</Button>
       <Button size="sm" variant="secondary">Belum dibaca</Button>
       <Button size="sm" variant="secondary">Assigned ke saya</Button>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 </div>
