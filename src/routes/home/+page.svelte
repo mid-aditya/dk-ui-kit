@@ -1,101 +1,178 @@
 <script lang="ts">
+  import * as Alert from '$lib/components/ui/alert';
   import * as Card from '$lib/components/ui/card';
-  
-  
-  
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
+  import { Field } from '$lib/components/ui/field';
+  import { Input } from '$lib/components/ui/input';
   import { Progress } from '$lib/components/ui/progress';
-  import Alert from '$lib/components/ui/alert.svelte';
-  import { MessagesSquare, Ticket, Star, Users } from 'lucide-svelte';
+  import * as Table from '$lib/components/ui/table';
+  import {
+    Activity,
+    ArrowUpRight,
+    CheckCircle2,
+    Clock3,
+    Mail,
+    MessageCircle,
+    Phone,
+    Star,
+    Users,
+    Zap
+  } from 'lucide-svelte';
 
-  const stats = [
-    { label: 'Antrian chat', value: '18', icon: MessagesSquare, hint: '4 menunggu > 5 mnt', urgent: true },
-    { label: 'Tiket open', value: '23', icon: Ticket, hint: '3 urgent', urgent: true },
-    { label: 'CSAT hari ini', value: '4.7', icon: Star, hint: 'dari 132 survei', urgent: false },
-    { label: 'Agent online', value: '14/18', icon: Users, hint: '4 istirahat', urgent: false }
+  const channelStats = [
+    { label: 'Phone Calls', value: '248', detail: '212 terjawab · 85%', response: '3m 24s', satisfaction: '4.6/5', icon: Phone },
+    { label: 'Live Chat', value: '186', detail: '174 direspon · 94%', response: '42 detik', satisfaction: '4.8/5', icon: MessageCircle },
+    { label: 'Email', value: '124', detail: '96 dibalas · 77%', response: '2j 18m', satisfaction: '4.5/5', icon: Mail },
+    { label: 'Social Media', value: '92', detail: '81 direspon · 88%', response: '18 menit', satisfaction: '4.4/5', icon: Activity },
+    { label: 'WhatsApp Business', value: '316', detail: '294 direspon · 93%', response: '1m 06s', satisfaction: '4.9/5', icon: MessageCircle },
+    { label: 'Comment & More', value: '74', detail: '61 direspon · 82%', response: '26 menit', satisfaction: '4.3/5', icon: Zap }
   ];
 
   const alerts = [
-    { type: 'warning' as const, text: '4 chat menunggu balasan lebih dari 5 menit', urgent: true },
-    { type: 'destructive' as const, text: 'Tiket T-2026-001 prioritas urgent', urgent: true },
-    { type: 'info' as const, text: '2 agent mendekati batas shift', urgent: false }
+    { variant: 'warning' as const, icon: Clock3, text: '4 chat menunggu balasan lebih dari 5 menit' },
+    { variant: 'destructive' as const, icon: Activity, text: 'Tiket T-2026-001 membutuhkan perhatian segera' },
+    { variant: 'success' as const, icon: CheckCircle2, text: 'Semua channel aktif dan terhubung' }
+  ];
+
+  const recentTickets = [
+    { id: 'T-2026-001', subject: 'Keterlambatan pengiriman', channel: 'WhatsApp', owner: 'Rina', status: 'Urgent', variant: 'destructive' as const },
+    { id: 'T-2026-002', subject: 'Reset password akun', channel: 'Live Chat', owner: 'Budi', status: 'Open', variant: 'warning' as const },
+    { id: 'T-2026-003', subject: 'Permintaan invoice bulanan', channel: 'Email', owner: 'Sari', status: 'In progress', variant: 'secondary' as const }
+  ];
+
+  const channels = [
+    { label: 'WhatsApp', value: 82 },
+    { label: 'Live Chat', value: 68 },
+    { label: 'Email', value: 46 },
+    { label: 'Voice', value: 32 }
   ];
 </script>
 
 <svelte:head><title>Home — DK UI Kit</title></svelte:head>
 
-<div></div>
-
-<!-- Stats Cards -->
-<div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
-  {#each stats as s}
-    <Card.Root class="hover:shadow-md transition-shadow cursor-pointer">
-      <Card.Content class="p-4">
-        <div class="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-          <s.icon size={15} class="text-primary" />{s.label}
-        </div>
-        <div class="mt-1 text-2xl font-extrabold tracking-tight">{s.value}</div>
-        <div class="text-[11px] text-muted-foreground">{s.hint}</div>
-      </Card.Content>
-    </Card.Root>
-  {/each}
-</div>
-
-<!-- Content Grid -->
-<div class="mt-3 grid gap-3 lg:grid-cols-2">
-  <!-- Channel Stats -->
-  <Card.Root>
-    <Card.Header><Card.Title>Kanal paling ramai</Card.Title></Card.Header>
-    <Card.Content class="space-y-3">
-      {#each [{ c: 'WhatsApp', v: 82 }, { c: 'Email', v: 46 }, { c: 'Telegram', v: 24 }, { c: 'Voice', v: 12 }] as k}
-        <div>
-          <div class="mb-1 flex justify-between text-sm"><span class="font-medium">{k.c}</span><span class="text-muted-foreground">{k.v}</span></div>
-          <Progress value={k.v} />
-        </div>
-      {/each}
-    </Card.Content>
-  </Card.Root>
-
-  <!-- Alerts Section -->
-  <Card.Root>
-    <Card.Header><Card.Title>Perlu perhatian</Card.Title></Card.Header>
-    <Card.Content class="space-y-2">
-      {#each alerts as alert}
-        <Alert variant={alert.type} dismissible>
-          {alert.text}
-        </Alert>
-      {/each}
-      <div class="mt-3 flex gap-2">
-        <Button href="/chat/v3" size="sm">Buka chat</Button>
-        <Button href="/ticketing" size="sm" variant="secondary">Lihat tiket</Button>
+<div class="flex flex-col gap-6">
+  <section class="flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
+    <div>
+      <div class="flex items-center gap-2 text-sm font-medium text-primary">
+        <Activity size={16} /> Real-time Performance Monitoring
       </div>
-    </Card.Content>
-  </Card.Root>
-</div>
+      <p class="mt-1 text-sm text-muted-foreground">Ringkasan performa seluruh kanal customer service.</p>
+    </div>
+    <div class="rounded-lg border border-border bg-card px-3 py-2 text-left md:text-right">
+      <div class="text-xs text-muted-foreground">Scope data</div>
+      <div class="text-sm font-semibold">Hari ini · Semua channel</div>
+    </div>
+  </section>
 
-<!-- Recent Tickets -->
-<div class="mt-3">
   <Card.Root>
-    <Card.Header>
-      <div class="flex items-center justify-between">
-        <Card.Title>Tiket terbaru</Card.Title>
-        <Badge>3 open</Badge>
-      </div>
+    <Card.Header class="pb-3">
+      <Card.Title class="text-base">Filter periode</Card.Title>
+      <p class="text-sm text-muted-foreground">Pilih rentang tanggal untuk memperbarui metrik.</p>
     </Card.Header>
     <Card.Content>
-      <div class="overflow-auto rounded-lg border">
-        <table class="w-full text-sm">
-          <tbody>
-            {#each [{ n: 'T-2026-001', s: 'Keterlambatan pengiriman', p: 'urgent' }, { n: 'T-2026-002', s: 'Reset password akun', p: 'medium' }] as t}
-              <tr class="border-b border-border last:border-0 hover:bg-muted/50">
-                <td class="px-4 py-3 font-mono font-semibold">{t.n}</td>
-                <td class="px-4 py-3">{t.s}</td>
-                <td class="px-4 py-3 text-right"><Badge variant={t.p === 'urgent' ? 'destructive' : 'warning'}>{t.p}</Badge></td>
-              </tr>
+      <div class="grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
+        <Field.Field>
+          <Field.Label for="start-date">Start date</Field.Label>
+          <Input id="start-date" type="date" value="2026-09-30" />
+        </Field.Field>
+        <Field.Field>
+          <Field.Label for="end-date">End date</Field.Label>
+          <Input id="end-date" type="date" value="2026-09-30" />
+        </Field.Field>
+        <Button class="w-full md:w-auto"><Activity data-icon="inline-start" />Apply filter</Button>
+      </div>
+    </Card.Content>
+  </Card.Root>
+
+  <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Statistik kanal">
+    {#each channelStats as stat}
+      <Card.Root class="transition-shadow hover:shadow-md">
+        <Card.Header class="flex-row items-center gap-3 space-y-0 pb-3">
+          <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <stat.icon size={19} />
+          </div>
+          <div class="min-w-0">
+            <Card.Title class="truncate text-base">{stat.label}</Card.Title>
+            <p class="text-xs text-muted-foreground">Volume interaksi</p>
+          </div>
+        </Card.Header>
+        <Card.Content class="flex flex-col gap-3">
+          <div class="flex items-baseline justify-between gap-2">
+            <span class="text-2xl font-bold tracking-tight">{stat.value}</span>
+            <Badge variant="secondary">Aktif</Badge>
+          </div>
+          <div class="flex flex-col gap-2 text-xs">
+            <div class="flex items-center justify-between gap-2"><span class="text-muted-foreground">Respons</span><span class="font-medium">{stat.detail}</span></div>
+            <div class="flex items-center justify-between gap-2"><span class="text-muted-foreground">Rata-rata response</span><span class="font-medium">{stat.response}</span></div>
+            <div class="flex items-center justify-between gap-2"><span class="flex items-center gap-1 text-muted-foreground"><Star size={13} /> Kepuasan</span><span class="font-medium">{stat.satisfaction}</span></div>
+          </div>
+        </Card.Content>
+      </Card.Root>
+    {/each}
+  </section>
+
+  <div class="grid gap-4 lg:grid-cols-[1fr_1.2fr]">
+    <Card.Root>
+      <Card.Header>
+        <Card.Title>Kanal paling ramai</Card.Title>
+        <p class="text-sm text-muted-foreground">Distribusi volume interaksi hari ini.</p>
+      </Card.Header>
+      <Card.Content class="flex flex-col gap-4">
+        {#each channels as channel}
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between text-sm"><span class="font-medium">{channel.label}</span><span class="text-muted-foreground">{channel.value}%</span></div>
+            <Progress value={channel.value} />
+          </div>
+        {/each}
+      </Card.Content>
+    </Card.Root>
+
+    <Card.Root>
+      <Card.Header>
+        <Card.Title>Perlu perhatian</Card.Title>
+        <p class="text-sm text-muted-foreground">Sinyal operasional yang perlu ditindaklanjuti.</p>
+      </Card.Header>
+      <Card.Content class="flex flex-col gap-2">
+        {#each alerts as alert}
+          <Alert.Root variant={alert.variant}>
+            <alert.icon />
+            <Alert.Description>{alert.text}</Alert.Description>
+          </Alert.Root>
+        {/each}
+        <div class="mt-2 flex flex-wrap gap-2">
+          <Button href="/chat/v3" size="sm">Buka chat</Button>
+          <Button href="/ticketing" size="sm" variant="outline">Lihat tiket</Button>
+        </div>
+      </Card.Content>
+    </Card.Root>
+  </div>
+
+  <Card.Root>
+    <Card.Header class="flex-row items-center justify-between space-y-0">
+      <div><Card.Title>Tiket terbaru</Card.Title><p class="mt-1 text-sm text-muted-foreground">Aktivitas tiket yang terakhir diperbarui.</p></div>
+      <Button href="/ticketing" variant="ghost" size="sm">Lihat semua <ArrowUpRight data-icon="inline-end" /></Button>
+    </Card.Header>
+    <Card.Content>
+      <div class="overflow-x-auto">
+        <Table.Root>
+          <Table.Header>
+            <Table.Row>
+              <Table.Head>ID tiket</Table.Head><Table.Head>Subjek</Table.Head><Table.Head class="hidden md:table-cell">Channel</Table.Head><Table.Head class="hidden md:table-cell">Owner</Table.Head><Table.Head class="text-right">Status</Table.Head>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {#each recentTickets as ticket}
+              <Table.Row>
+                <Table.Cell class="font-mono text-xs font-semibold">{ticket.id}</Table.Cell>
+                <Table.Cell class="min-w-48 font-medium">{ticket.subject}</Table.Cell>
+                <Table.Cell class="hidden md:table-cell">{ticket.channel}</Table.Cell>
+                <Table.Cell class="hidden md:table-cell">{ticket.owner}</Table.Cell>
+                <Table.Cell class="text-right"><Badge variant={ticket.variant}>{ticket.status}</Badge></Table.Cell>
+              </Table.Row>
             {/each}
-          </tbody>
-        </table>
+          </Table.Body>
+        </Table.Root>
       </div>
     </Card.Content>
   </Card.Root>
