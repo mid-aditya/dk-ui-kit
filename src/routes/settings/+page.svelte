@@ -16,8 +16,8 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Switch } from '$lib/components/ui/switch';
 	import { Slider } from '$lib/components/ui/slider';
-	import { Calendar } from '$lib/components/ui/calendar';
-	import { CalendarDate } from '@internationalized/date';
+	import DatePicker from "$lib/components/ui/date-picker.svelte";
+	import { CalendarDate, type DateValue } from '@internationalized/date';
 
 	import { toast } from 'svelte-sonner';
 	import { Settings, Mail, Send, LayoutTemplate, Search, CircleCheck, TriangleAlert, KeyRound, History } from 'lucide-svelte';
@@ -30,7 +30,7 @@
 	let autoreplyOn = $state(false);
 	let testOpen = $state(false);
 	let page = $state(1);
-	let deployDate = $state<CalendarDate | undefined>(new CalendarDate(2026, 10, 5));
+	let deployDate = $state<DateValue | undefined>(new CalendarDate(2026, 10, 5));
 	const perPage = 4;
 
 	const generalCards = [
@@ -152,7 +152,7 @@
 								<Field.Field><div class="flex items-center justify-between rounded-xl border p-3"><div><Field.Label>Relay SMTP</Field.Label><Field.Description>Aktifkan pengiriman keluar.</Field.Description></div><Switch bind:checked={smtpOn} /></div></Field.Field>
 								<Field.Field><div class="flex items-center justify-between rounded-xl border p-3"><div><Field.Label>Autoreply luar jam kerja</Field.Label><Field.Description>Balas otomatis malam hari.</Field.Description></div><Switch bind:checked={autoreplyOn} /></div></Field.Field>
 								<Field.Field><Field.Label>Batas kirim per jam: {quota * 10}</Field.Label><Slider type="single" bind:value={quota} min={10} max={100} step={5} /><Field.Description>Geser untuk simulasi kuota.</Field.Description></Field.Field>
-								<Field.Field><Field.Label>Jadwal deploy config</Field.Label><Calendar type="single" bind:value={deployDate} /></Field.Field>
+								<Field.Field><Field.Label>Jadwal deploy config</Field.Label><DatePicker bind:value={deployDate} label="Pilih jadwal deploy config" placeholder="Pilih tanggal deploy" /></Field.Field>
 							</Field.FieldGroup>
 						</Card.Content>
 					</Card.Root>

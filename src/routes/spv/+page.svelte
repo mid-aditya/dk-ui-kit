@@ -17,8 +17,8 @@
 	import { Progress } from '$lib/components/ui/progress';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Switch } from '$lib/components/ui/switch';
-	import { Calendar } from '$lib/components/ui/calendar';
-	import { CalendarDate } from '@internationalized/date';
+	import DatePicker from "$lib/components/ui/date-picker.svelte";
+	import { CalendarDate, type DateValue } from '@internationalized/date';
 	import { Chart as LCChart, Svg, Axis, Grid, Bars } from 'layerchart';
 	import { toast } from 'svelte-sonner';
 	import { RefreshCw, Users, Hourglass, MessagesSquare, CircleCheck, Search, UserPlus, ShieldCheck, TriangleAlert } from 'lucide-svelte';
@@ -33,7 +33,7 @@
 	let sheetOpen = $state(false);
 	let selectedChat = $state('');
 	let otp = $state('');
-	let shiftDate = $state<CalendarDate | undefined>(new CalendarDate(2026, 9, 30));
+	let shiftDate = $state<DateValue | undefined>(new CalendarDate(2026, 9, 30));
 
 	type Chat = { customer: string; channel: string; account: string; agent: string | null; status: 'open' | 'queue' | 'close'; started: string };
 	const chats: Chat[] = [
@@ -185,7 +185,7 @@
 		<Sheet.Content side="right">
 			<Sheet.Header><Sheet.Title>Jadwal shift SPV</Sheet.Title><Sheet.Description>Pilih tanggal shift dan verifikasi PIN sebelum release massal.</Sheet.Description></Sheet.Header>
 			<div class="flex flex-col gap-4 px-4 pb-4">
-				<Calendar type="single" bind:value={shiftDate} />
+				<DatePicker bind:value={shiftDate} label="Pilih tanggal shift" placeholder="Pilih tanggal shift" />
 				<Field.Field><Field.Label>PIN otorisasi (6 digit)</Field.Label>
 					<InputOTP.Root maxlength={6} bind:value={otp}>
 						<InputOTP.Group>

@@ -15,17 +15,14 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Empty from '$lib/components/ui/empty';
-	import * as Popover from '$lib/components/ui/popover';
-	import { RangeCalendar } from '$lib/components/ui/range-calendar';
+	import DateRangePicker from "$lib/components/ui/date-range-picker.svelte";
 	import { Spinner } from '$lib/components/ui/spinner';
 	import { cn } from '$lib/utils.js';
 	import { Handshake, Ticket, TriangleAlert, CircleCheck, Info, Gauge } from 'lucide-svelte';
-	import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalized/date';
-	import { CalendarIcon } from 'lucide-svelte';
+	import { CalendarDate } from '@internationalized/date';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
 
-	const df = new DateFormatter('id-ID', { dateStyle: 'medium' });
 	import type { DateRange } from 'bits-ui';
 
 	let tab = $state('ringkasan'); let channel = $state('semua'); let loading = $state(false); let open = $state(false);
@@ -53,7 +50,7 @@
 		<Card.Header><div class="flex items-center gap-3"><Avatar.Root class="size-12"><Avatar.Fallback>AG</Avatar.Fallback></Avatar.Root><div><Card.Title>Agent Productivity</Card.Title><Card.Description>Monitor performa dan produktivitas agent secara real-time.</Card.Description></div></div></Card.Header>
 		<Card.Content class="flex flex-col gap-4">
 			<Field.FieldGroup class="grid gap-4 md:grid-cols-[1fr_200px_auto]">
-				<Field.Field><Field.Label>Periode</Field.Label><Popover.Root><Popover.Trigger aria-label="Pilih periode">{#snippet child({ props })}<Button {...props} variant="outline" class="w-full justify-start px-2.5 font-normal"><CalendarIcon data-icon="inline-start" />{#if period?.start}{#if period.end}{df.format(period.start.toDate(getLocalTimeZone()))} - {df.format(period.end.toDate(getLocalTimeZone()))}{:else}{df.format(period.start.toDate(getLocalTimeZone()))}{/if}{:else}<span>Pilih periode</span>{/if}</Button>{/snippet}</Popover.Trigger><Popover.Content class="w-auto p-0" align="start"><Popover.Title class="sr-only">Pilih periode</Popover.Title><Popover.Description class="sr-only">Kalender periode</Popover.Description><RangeCalendar bind:value={period} numberOfMonths={1} locale="id-ID" /></Popover.Content></Popover.Root></Field.Field>
+				<Field.Field><Field.Label>Periode</Field.Label><DateRangePicker bind:value={period} label="Pilih periode" /></Field.Field>
 				<Field.Field>
 					<Field.Label for="ch">Channel</Field.Label>
 					<Select.Root type="single" bind:value={channel}><Select.Trigger id="ch" class="w-full">{channel}</Select.Trigger><Select.Content><Select.Group><Select.GroupHeading>Channel</Select.GroupHeading><Select.Item value="semua">Semua</Select.Item><Select.Item value="chat">Live Chat</Select.Item><Select.Item value="call">Inbound Call</Select.Item></Select.Group></Select.Content></Select.Root>

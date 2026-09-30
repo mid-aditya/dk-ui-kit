@@ -6,20 +6,18 @@
 	import * as Pagination from '$lib/components/ui/pagination';
 	import * as Empty from '$lib/components/ui/empty';
 	import * as Alert from '$lib/components/ui/alert';
-	import * as Popover from '$lib/components/ui/popover';
+	import DateRangePicker from "$lib/components/ui/date-range-picker.svelte";
 	import * as Chart from '$lib/components/ui/chart';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Progress } from '$lib/components/ui/progress';
 	import { Separator } from '$lib/components/ui/separator';
-	import { RangeCalendar } from '$lib/components/ui/range-calendar';
-	import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalized/date';
+	import { CalendarDate } from '@internationalized/date';
 	import type { DateRange } from 'bits-ui';
 	import { Chart as LCChart, Svg, Axis, Grid, Bars, Area } from 'layerchart';
-	import { Download, Filter, RotateCcw, Search, Smile, Meh, Frown, CalendarIcon, Info, Phone, CircleCheck, ChartLine, CircleX } from 'lucide-svelte';
+	import { Download, Filter, RotateCcw, Search, Smile, Meh, Frown, Info, Phone, CircleCheck, ChartLine, CircleX } from 'lucide-svelte';
 
-	const df = new DateFormatter('id-ID', { dateStyle: 'medium' });
 	let period = $state<DateRange | undefined>({ start: new CalendarDate(2026, 1, 1), end: new CalendarDate(2026, 9, 30) });
 	let kanal = $state('all');
 	let agent = $state('all');
@@ -103,14 +101,7 @@
 			<Field.FieldGroup class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
 				<Field.Field>
 					<Field.Label>Periode</Field.Label>
-					<Popover.Root>
-						<Popover.Trigger id="csat-period">
-							{#snippet child({ props })}
-								<Button {...props} variant="outline" class="w-full justify-start px-2.5 font-normal"><CalendarIcon data-icon="inline-start" />{#if period?.start}{#if period.end}{df.format(period.start.toDate(getLocalTimeZone()))} - {df.format(period.end.toDate(getLocalTimeZone()))}{:else}{df.format(period.start.toDate(getLocalTimeZone()))}{/if}{:else}<span>Pilih periode</span>{/if}</Button>
-							{/snippet}
-						</Popover.Trigger>
-						<Popover.Content class="w-auto p-0" align="start"><RangeCalendar bind:value={period} numberOfMonths={1} locale="id-ID" /></Popover.Content>
-					</Popover.Root>
+					<DateRangePicker bind:value={period} label="Pilih periode" />
 				</Field.Field>
 				<Field.Field>
 					<Field.Label for="csat-kanal">Kanal</Field.Label>
