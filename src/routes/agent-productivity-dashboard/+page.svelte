@@ -1,93 +1,96 @@
 <script lang="ts">
-  import * as Card from '$lib/components/ui/card';
-  
-  
-  
-  import { Badge } from '$lib/components/ui/badge';
-  import { Progress } from '$lib/components/ui/progress';
-  import { agents } from '$lib/mock';
+	import * as Card from '$lib/components/ui/card';
+	import * as Table from '$lib/components/ui/table';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import * as Field from '$lib/components/ui/field';
+	import * as Select from '$lib/components/ui/select';
+	import * as Tooltip from '$lib/components/ui/tooltip';
+	import * as Alert from '$lib/components/ui/alert';
+	import * as Avatar from '$lib/components/ui/avatar';
+	import * as Chart from '$lib/components/ui/chart';
+	import * as ToggleGroup from '$lib/components/ui/toggle-group';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import { Progress } from '$lib/components/ui/progress';
+	import { Separator } from '$lib/components/ui/separator';
+	import { Skeleton } from '$lib/components/ui/skeleton';
+	import * as Empty from '$lib/components/ui/empty';
+	import { RangeCalendar } from '$lib/components/ui/range-calendar';
+	import { Spinner } from '$lib/components/ui/spinner';
+	import { cn } from '$lib/utils.js';
+	import { Handshake, Ticket, TriangleAlert, CircleCheck, Info, Gauge } from 'lucide-svelte';
+	import { CalendarDate } from '@internationalized/date';
+	import type { DateRange } from 'bits-ui';
 
-  const stats = [
-    { label: 'Utilisasi', value: '76%' },
-    { label: 'Avg handle time', value: '6:12' },
-    { label: 'First response', value: '1:48' },
-    { label: 'Occupancy', value: '81%' }
-  ];
-
-  const hours = ['08', '10', '12', '14', '16', '18'];
-  const load = [42, 78, 95, 88, 64, 30];
-  let max = $derived(Math.max(...load));
+	let tab = $state('ringkasan'); let channel = $state('semua'); let loading = $state(false); let open = $state(false);
+	let period = $state<DateRange | undefined>({ start: new CalendarDate(2026, 9, 1), end: new CalendarDate(2026, 9, 30) });
+	const kpi = [
+		{ icon: Handshake, label: 'Total Interaksi', value: '248', target: 'Target: 200', ok: true },
+		{ icon: Ticket, label: 'Tiket Diproses', value: '96', target: 'Target: 90', ok: true },
+		{ icon: TriangleAlert, label: 'Tiket Near SLA', value: '7', target: 'Perlu perhatian', ok: false },
+		{ icon: CircleCheck, label: 'Tiket Over SLA', value: '2', target: 'Eskalasi', ok: false }
+	];
+	const rows = [
+		{ name: 'Rina Amelia', interaksi: 64, tiket: 28, near: 2, over: 0, util: 88 },
+		{ name: 'Budi Santoso', interaksi: 58, tiket: 24, near: 3, over: 1, util: 81 },
+		{ name: 'Sari Dewi', interaksi: 47, tiket: 19, near: 1, over: 1, util: 72 }
+	];
+	function refresh() { loading = true; setTimeout(() => (loading = false), 500); }
+	const BtnIcon = $derived(loading ? Spinner : Gauge);
+	const chartConfig = { util: { label: 'Utilisasi', color: 'var(--primary)' } };
 </script>
 
-<svelte:head><title>Agent Productivity Dashboard — DK UI Kit</title></svelte:head>
+<svelte:head><title>Agent Productivity</title></svelte:head>
 
-<div></div>
+<div class="flex flex-col gap-6">
+	<Card.Root>
+		<Card.Header><div class="flex items-center gap-3"><Avatar.Root class="size-12"><Avatar.Fallback>AG</Avatar.Fallback></Avatar.Root><div><Card.Title>Agent Productivity</Card.Title><Card.Description>Monitor performa dan produktivitas agent secara real-time.</Card.Description></div></div></Card.Header>
+		<Card.Content class="flex flex-col gap-4">
+			<Field.FieldGroup class="grid gap-4 md:grid-cols-[1fr_200px_auto]">
+				<Field.Field><Field.Label>Periode</Field.Label><RangeCalendar bind:value={period} numberOfMonths={1} locale="id-ID" /></Field.Field>
+				<Field.Field>
+					<Field.Label for="ch">Channel</Field.Label>
+					<Select.Root type="single" bind:value={channel}><Select.Trigger id="ch" class="w-full">{channel}</Select.Trigger><Select.Content><Select.Group><Select.GroupHeading>Channel</Select.GroupHeading><Select.Item value="semua">Semua</Select.Item><Select.Item value="chat">Live Chat</Select.Item><Select.Item value="call">Inbound Call</Select.Item></Select.Group></Select.Content></Select.Root>
+				</Field.Field>
+				<Field.Field><Field.Label>&nbsp;</Field.Label><Button onclick={refresh} disabled={loading}><BtnIcon data-icon="inline-start" /><span>{loading ? 'Memuat' : 'Refresh'}</span></Button></Field.Field>
+			</Field.FieldGroup>
+			<ToggleGroup.Root type="single" bind:value={tab} aria-label="Tampilan"><ToggleGroup.Item value="ringkasan">Ringkasan</ToggleGroup.Item><ToggleGroup.Item value="sla">SLA</ToggleGroup.Item><ToggleGroup.Item value="tren">Tren</ToggleGroup.Item></ToggleGroup.Root>
+			<Tabs.Root bind:value={tab}><Tabs.List><Tabs.Trigger value="ringkasan">Ringkasan</Tabs.Trigger><Tabs.Trigger value="sla">SLA</Tabs.Trigger><Tabs.Trigger value="tren">Tren</Tabs.Trigger></Tabs.List></Tabs.Root>
+		</Card.Content>
+		<Card.Footer class="text-muted-foreground text-xs">Welcome back, Agent · Online</Card.Footer>
+	</Card.Root>
 
-<!-- Stats Cards -->
-<div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
-  {#each stats as s}
-    <Card.Root class="hover:shadow-md transition-shadow">
-      <Card.Content class="p-4">
-        <div class="text-xs font-medium text-muted-foreground">{s.label}</div>
-        <div class="mt-1 text-2xl font-extrabold">{s.value}</div>
-      </Card.Content>
-    </Card.Root>
-  {/each}
+	{#if loading}
+		<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{#each [1, 2, 3, 4] as _}<Skeleton class="h-32 w-full" />{/each}</div>
+	{:else}
+		<section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+			{#each kpi as k}
+				<Card.Root class={cn(!k.ok && 'border-amber-500/40')}>
+					<Card.Header class="flex-row items-center gap-3"><div class="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary"><k.icon data-icon="card" /></div><Card.Title class="text-sm">{k.label}</Card.Title></Card.Header>
+					<Card.Content><div class="text-2xl font-bold">{k.value}</div><p class="text-muted-foreground text-xs">{k.target}</p></Card.Content>
+					<Card.Footer><Badge variant={k.ok ? 'success' : 'warning'}>{k.ok ? 'Above target' : 'Watch'}</Badge></Card.Footer>
+				</Card.Root>
+			{/each}
+		</section>
+	{/if}
+
+	<Card.Root>
+		<Card.Header><Card.Title>Utilisasi agent</Card.Title><Card.Description>Interaksi vs tiket diproses.</Card.Description></Card.Header>
+		<Card.Content class="flex flex-col gap-4">
+			<Chart.Container config={chartConfig} class="min-h-36"><div class="flex h-32 w-full items-end gap-3">{#each rows as r}<div class="flex flex-1 flex-col items-center gap-1"><div class="w-full rounded bg-primary/80" style="height:{r.util}%"></div><span class="text-[10px]">{r.name.split(' ')[0]}</span></div>{/each}</div></Chart.Container>
+			{#if rows.length === 0}
+				<Empty.Root><Empty.Header><Empty.Title>Belum ada data</Empty.Title><Empty.Description>Data produktivitas akan muncul di sini.</Empty.Description></Empty.Header></Empty.Root>
+			{:else}
+				<Table.Root><Table.Header><Table.Row><Table.Head>Agent</Table.Head><Table.Head>Total Interaksi</Table.Head><Table.Head>Tiket</Table.Head><Table.Head>Near SLA</Table.Head><Table.Head>Over SLA</Table.Head><Table.Head>Utilisasi</Table.Head></Table.Row></Table.Header>
+				<Table.Body>{#each rows as r}<Table.Row><Table.Cell><div class="flex items-center gap-2"><Avatar.Root class="size-7"><Avatar.Fallback>{r.name.slice(0, 1)}</Avatar.Fallback></Avatar.Root><span class="font-medium">{r.name}</span></div></Table.Cell><Table.Cell>{r.interaksi}</Table.Cell><Table.Cell>{r.tiket}</Table.Cell><Table.Cell><Tooltip.Root><Tooltip.Trigger><Badge variant="warning">{r.near}</Badge></Tooltip.Trigger><Tooltip.Content>Mendekati SLA</Tooltip.Content></Tooltip.Root></Table.Cell><Table.Cell><Badge variant="destructive">{r.over}</Badge></Table.Cell><Table.Cell><div class="flex items-center gap-2"><Progress value={r.util} class="w-24" /><span class="text-xs">{r.util}%</span></div></Table.Cell></Table.Row>{/each}</Table.Body></Table.Root>
+			{/if}
+		</Card.Content>
+		<Card.Footer><Separator class="my-1" /><div class="flex items-center justify-between gap-2"><p class="text-muted-foreground flex items-center gap-1 text-xs"><Info data-icon="inline" /> Klik Near/Over SLA untuk daftar tiket.</p><Button size="sm" variant="outline" onclick={() => (open = true)}>Lihat SLA</Button></div></Card.Footer>
+	</Card.Root>
+
+	<Alert.Root variant="warning"><TriangleAlert data-icon="alert" /><Alert.Description>7 tiket mendekati SLA — prioritaskan antrean.</Alert.Description></Alert.Root>
 </div>
 
-<!-- Charts Row -->
-<div class="mt-3 grid gap-3 lg:grid-cols-2">
-  <!-- Hourly Load Chart -->
-  <Card.Root>
-    <Card.Header><Card.Title>Beban percakapan per jam</Card.Title></Card.Header>
-    <Card.Content>
-      <div class="flex h-36 items-end gap-2">
-        {#each hours as h, i}
-          <div class="flex flex-1 flex-col items-center gap-1">
-            <div class="flex w-full flex-1 items-end rounded-lg bg-muted">
-              <div 
-                class="w-full rounded-lg transition-all" 
-                style="height:{Math.round((load[i] / max) * 100)}%; background-color: var(--primary);"
-              ></div>
-            </div>
-            <span class="text-[11px] text-muted-foreground">{h}</span>
-          </div>
-        {/each}
-      </div>
-    </Card.Content>
-  </Card.Root>
+<Dialog.Root bind:open><Dialog.Content class="sm:max-w-md"><Dialog.Header><Dialog.Title>Tiket Near SLA</Dialog.Title><Dialog.Description>7 tiket membutuhkan perhatian dalam 2 jam.</Dialog.Description></Dialog.Header><Dialog.Footer><Button variant="outline" onclick={() => (open = false)}>Tutup</Button><Button>Buka tiket</Button></Dialog.Footer></Dialog.Content></Dialog.Root>
 
-  <!-- Agent Status -->
-  <Card.Root>
-    <Card.Header><Card.Title>Status agent saat ini</Card.Title></Card.Header>
-    <Card.Content class="space-y-3">
-      {#each agents as a}
-        <div class="flex items-center justify-between">
-          <span class="font-medium">{a.name}</span>
-          <div class="flex items-center gap-2">
-            <span class="text-xs text-muted-foreground">{a.chats} chat aktif</span>
-            <Badge variant={a.status === 'online' ? 'success' : a.status === 'busy' ? 'warning' : 'secondary'}>
-              {a.status}
-            </Badge>
-          </div>
-        </div>
-      {/each}
-    </Card.Content>
-  </Card.Root>
-</div>
-
-<!-- Productivity vs Target -->
-<Card.Root class="mt-3">
-  <Card.Header><Card.Title>Produktivitas vs target</Card.Title></Card.Header>
-  <Card.Content class="space-y-4">
-    {#each agents as a}
-      <div>
-        <div class="mb-2 flex justify-between text-sm">
-          <span class="font-medium">{a.name}</span>
-          <span class="text-muted-foreground">{a.chats + a.tickets}/30 kasus</span>
-        </div>
-        <Progress value={((a.chats + a.tickets) / 30) * 100} />
-      </div>
-    {/each}
-  </Card.Content>
-</Card.Root>

@@ -1,137 +1,107 @@
 <script lang="ts">
-  import * as Card from '$lib/components/ui/card';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import * as Select from '$lib/components/ui/select';
-  import * as Dialog from '$lib/components/ui/dialog';
-  import { Label } from '$lib/components/ui/label';
-  import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert';
-  import { tickets } from '$lib/mock';
+	import * as Card from '$lib/components/ui/card';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import * as Avatar from '$lib/components/ui/avatar';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import * as Tooltip from '$lib/components/ui/tooltip';
+	import * as ScrollArea from '$lib/components/ui/scroll-area';
+	import * as Resizable from '$lib/components/ui/resizable';
+	import * as Sheet from '$lib/components/ui/sheet';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import * as InputGroup from '$lib/components/ui/input-group';
+	import * as Message from '$lib/components/ui/message';
+	import * as Bubble from '$lib/components/ui/bubble';
+	import { Separator } from '$lib/components/ui/separator';
+	import * as Empty from '$lib/components/ui/empty';
+	import { Skeleton } from '$lib/components/ui/skeleton';
+	import EmailItem from '$lib/components/ui/email-item.svelte';
+	import { toast } from 'svelte-sonner';
+	import { cn } from '$lib/utils';
+	import { Search, MoreVertical, Ticket } from 'lucide-svelte';
 
-  const statusOptions = [
-    { value: '', label: 'Semua status' },
-    { value: 'open', label: 'Open' },
-    { value: 'pending', label: 'Pending' },
-    { value: 'resolved', label: 'Resolved' }
-  ];
-  const priorityOptions = [
-    { value: 'low', label: 'Low' },
-    { value: 'medium', label: 'Medium' },
-    { value: 'urgent', label: 'Urgent' }
-  ];
-
-  let status = $state('');
-  let modal = $state(false);
-  let form = $state({ subject: '', customer: '', priority: 'medium' });
-  let list = $derived(tickets.filter((t) => !status || t.status === status));
-  const prio = (p: string) => (p === 'urgent' ? 'destructive' : p === 'medium' ? 'warning' : 'secondary');
-  const labelOf = (opts: { value: string; label: string }[], v: string) =>
-    opts.find((o) => o.value === v)?.label ?? '';
+	const tickets = [
+		{ id: 'TCK-001', customer: 'Budi Santoso', subject: 'Paket belum sampai', channel: 'WhatsApp', status: 'open', time: '10:20' },
+		{ id: 'TCK-002', customer: 'Siti Aminah', subject: 'Pengajuan KTP', channel: 'Email', status: 'pending', time: '09:45' },
+		{ id: 'TCK-003', customer: 'Andi Wijaya', subject: 'Refund dana', channel: 'Live Chat', status: 'resolved', time: '08:15' }
+	];
+	let sel = $state(tickets[0]);
+	let loading = $state(false);
+	let reply = $state('');
+	const initials = (n: string) => n.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 </script>
 
 <svelte:head><title>Ticketing — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-end">
-  <Button size="sm" onclick={() => (modal = true)}>Buat tiket</Button>
+<div class="flex flex-col gap-3">
+	<Tabs.Root value="open">
+		<Tabs.List>
+			<Tabs.Trigger value="open">Open</Tabs.Trigger>
+			<Tabs.Trigger value="pending">Pending</Tabs.Trigger>
+			<Tabs.Trigger value="resolved">Resolved</Tabs.Trigger>
+		</Tabs.List>
+	</Tabs.Root>
+
+	<Resizable.PaneGroup direction="horizontal" class="min-h-[70vh] gap-3">
+		<Resizable.Pane defaultSize={32}>
+			<Card.Root class="flex h-full flex-col">
+				<Card.Header class="flex flex-row items-center gap-2">
+					<InputGroup.Root><InputGroup.Addon><Search class="size-4" /></InputGroup.Addon><InputGroup.Input placeholder="Cari tiket…" /></InputGroup.Root>
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger>
+							{#snippet child({ props })}<Button size="icon" variant="outline" {...props}><MoreVertical class="size-4" /></Button>{/snippet}
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content>
+							<DropdownMenu.Group><DropdownMenu.GroupHeading>Status</DropdownMenu.GroupHeading><DropdownMenu.Item>Open</DropdownMenu.Item><DropdownMenu.Item>Pending</DropdownMenu.Item><DropdownMenu.Item>Resolved</DropdownMenu.Item></DropdownMenu.Group>
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
+				</Card.Header>
+				<Separator />
+				<ScrollArea.Root class="h-[55vh]">
+					<div class="flex flex-col gap-2 p-3">
+						{#each tickets as t (t.id)}
+							<button onclick={() => { sel = t; loading = true; setTimeout(() => (loading = false), 600); }} class={cn('flex items-center gap-3 rounded-lg p-3 text-left hover:bg-muted/50', sel.id === t.id && 'bg-muted')}>
+								<Avatar.Root><Avatar.Fallback>{initials(t.customer)}</Avatar.Fallback></Avatar.Root>
+								<span class="min-w-0 flex-1"><span class="flex items-center gap-2"><Ticket class="size-3" /><strong class="truncate text-sm">{t.id}</strong><Badge variant="outline" class="text-[10px]">{t.channel}</Badge></span>
+								<span class="block truncate text-xs text-muted-foreground">{t.subject}</span></span>
+								<Badge variant={t.status === 'open' ? 'default' : t.status === 'pending' ? 'secondary' : 'outline'}>{t.status}</Badge>
+							</button>
+						{/each}
+					</div>
+				</ScrollArea.Root>
+			</Card.Root>
+		</Resizable.Pane>
+		<Resizable.Handle />
+		<Resizable.Pane defaultSize={68}>
+			<Card.Root class="flex h-full flex-col">
+				<Card.Header class="flex flex-row items-center gap-3">
+					<div class="flex flex-1 flex-col gap-0.5"><strong class="text-sm">{sel.id} — {sel.subject}</strong><span class="text-xs text-muted-foreground">{sel.customer} • {sel.channel}</span></div>
+					<Tooltip.Provider><Tooltip.Root><Tooltip.Trigger>{#snippet child({ props })}<Button size="sm" variant="outline" {...props}>Assign</Button>{/snippet}</Tooltip.Trigger><Tooltip.Content>Assign ke agen</Tooltip.Content></Tooltip.Root></Tooltip.Provider>
+					<Sheet.Root>
+						<Sheet.Trigger>{#snippet child({ props })}<Button size="sm" variant="outline" {...props}>Timeline</Button>{/snippet}</Sheet.Trigger>
+						<Sheet.Content><Sheet.Header><Sheet.Title>Timeline Tiket {sel.id}</Sheet.Title></Sheet.Header><div class="flex flex-col gap-2 p-4 text-sm"><p>Dibuat • Diproses • Escalated • Selesai</p><Separator /><p class="text-muted-foreground">Meniru status-card & timeline blade ticketing.</p></div></Sheet.Content>
+					</Sheet.Root>
+					<Dialog.Root>
+						<Dialog.Trigger>{#snippet child({ props })}<Button size="sm" {...props}>Close Ticket</Button>{/snippet}</Dialog.Trigger>
+						<Dialog.Content><Dialog.Header><Dialog.Title>Tutup tiket {sel.id}?</Dialog.Title></Dialog.Header><Dialog.Footer><Button onclick={() => toast.success('Tiket ditutup')}>Tutup</Button></Dialog.Footer></Dialog.Content>
+					</Dialog.Root>
+				</Card.Header>
+				<Separator />
+				<ScrollArea.Root class="h-[45vh] p-4">
+					{#if loading}<div class="flex flex-col gap-2"><Skeleton class="h-12 w-full" /><Skeleton class="h-12 w-5/6" /></div>
+					{:else}
+						<Message.Group>
+							<Message.Root><Message.Avatar><Avatar.Root><Avatar.Fallback>{initials(sel.customer)}</Avatar.Fallback></Avatar.Root></Message.Avatar><div class="flex flex-col gap-1"><Message.Header>{sel.customer}</Message.Header><Bubble.Root variant="received"><Bubble.Content>{sel.subject} — mohon bantuan follow-up.</Bubble.Content></Bubble.Root><Message.Footer>{sel.time}</Message.Footer></div></Message.Root>
+							<Message.Root class="justify-end"><div class="flex flex-col gap-1"><Bubble.Root variant="sent"><Bubble.Content>Baik kak, tiket {sel.id} sedang kami proses.</Bubble.Content></Bubble.Root><Message.Footer>Agent • now</Message.Footer></div></Message.Root>
+						</Message.Group>
+						<div class="mt-3 flex flex-col gap-2"><EmailItem from={sel.customer} subject={sel.subject} preview="Lampiran dokumen pengajuan…" time={sel.time} /></div>
+					{/if}
+				</ScrollArea.Root>
+				<Card.Footer>
+					<InputGroup.Root><InputGroup.Input bind:value={reply} placeholder="Balas tiket…" /><InputGroup.Button onclick={() => { toast.success('Balasan terkirim'); reply = ''; }}>Kirim</InputGroup.Button></InputGroup.Root>
+				</Card.Footer>
+			</Card.Root>
+		</Resizable.Pane>
+	</Resizable.PaneGroup>
 </div>
-
-<!-- Toolbar -->
-<div class="mt-3 flex flex-wrap items-center gap-2">
-  <Select.Root type="single" bind:value={status}>
-    <Select.Trigger class="w-44">
-      {status ? labelOf(statusOptions, status) : 'Semua status'}
-    </Select.Trigger>
-    <Select.Content>
-      {#each statusOptions as opt (opt.value)}
-        <Select.Item value={opt.value} label={opt.label} />
-      {/each}
-    </Select.Content>
-  </Select.Root>
-  <Button size="sm" variant="secondary" href="/chat/v3/ticket/result">Hasil tiket</Button>
-  <Button size="sm" variant="secondary" href="/chat/v3/ticket/kirana-monitoring">Monitoring</Button>
-</div>
-
-<!-- Alert for urgent tickets -->
-{#if list.some(t => t.priority === 'urgent')}
-  <div class="mt-3">
-    <Alert variant="destructive">
-      <AlertTitle>Peringatan</AlertTitle>
-      <AlertDescription>
-        Terdapat tiket dengan prioritas urgent yang perlu segera ditindaklanjuti.
-      </AlertDescription>
-    </Alert>
-  </div>
-{/if}
-
-<!-- Tickets Table -->
-<Card.Root class="mt-3">
-  <Card.Content class="p-0">
-    <div class="overflow-auto rounded-lg border">
-      <table class="w-full text-sm">
-        <thead class="bg-muted text-xs uppercase text-muted-foreground">
-          <tr>
-            <th class="px-4 py-3 text-left font-semibold">Nomor</th>
-            <th class="px-4 py-3 text-left font-semibold">Subjek</th>
-            <th class="px-4 py-3 text-left font-semibold">Customer</th>
-            <th class="px-4 py-3 text-left font-semibold">Prioritas</th>
-            <th class="px-4 py-3 text-left font-semibold">SLA</th>
-            <th class="px-4 py-3 text-left font-semibold">Agent</th>
-            <th class="px-4 py-3 text-left font-semibold">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {#each list as t (t.number)}
-            <tr class="border-b border-border last:border-0 hover:bg-muted/50">
-              <td class="px-4 py-3 font-mono font-semibold">{t.number}</td>
-              <td class="px-4 py-3">{t.subject}</td>
-              <td class="px-4 py-3">{t.customer}</td>
-              <td class="px-4 py-3"><Badge variant={prio(t.priority)}>{t.priority}</Badge></td>
-              <td class="px-4 py-3 text-xs text-muted-foreground">{t.sla}</td>
-              <td class="px-4 py-3 text-xs text-muted-foreground">{t.agent}</td>
-              <td class="px-4 py-3"><Badge variant={t.status === 'resolved' ? 'success' : 'warning'}>{t.status}</Badge></td>
-            </tr>
-          {:else}
-            <tr>
-              <td colspan="7" class="px-4 py-8 text-center text-muted-foreground">Belum ada tiket.</td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
-    </div>
-  </Card.Content>
-</Card.Root>
-
-<!-- Create Ticket Dialog -->
-<Dialog.Root bind:open={modal}>
-  <Dialog.Content class="sm:max-w-lg">
-    <Dialog.Header>
-      <Dialog.Title>Tiket baru</Dialog.Title>
-      <Dialog.Description>Buat tiket dukungan baru untuk customer.</Dialog.Description>
-    </Dialog.Header>
-    <form class="flex flex-col gap-4" onsubmit={(e) => { e.preventDefault(); modal = false; }}>
-      <div class="flex flex-col gap-2">
-        <Label for="tk-s">Subjek *</Label>
-        <Input id="tk-s" bind:value={form.subject} placeholder="Judul tiket" required />
-      </div>
-      <div class="flex flex-col gap-2">
-        <Label for="tk-c">Customer</Label>
-        <Input id="tk-c" bind:value={form.customer} placeholder="Nama customer" />
-      </div>
-      <div class="flex flex-col gap-2">
-        <Label for="tk-p">Prioritas</Label>
-        <Select.Root type="single" bind:value={form.priority}>
-          <Select.Trigger class="w-full" id="tk-p">
-            {labelOf(priorityOptions, form.priority)}
-          </Select.Trigger>
-          <Select.Content>
-            {#each priorityOptions as opt (opt.value)}
-              <Select.Item value={opt.value} label={opt.label} />
-            {/each}
-          </Select.Content>
-        </Select.Root>
-      </div>
-      <Button type="submit" class="w-full">Simpan</Button>
-    </form>
-  </Dialog.Content>
-</Dialog.Root>

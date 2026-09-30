@@ -1,166 +1,130 @@
 <script lang="ts">
-  import * as Alert from '$lib/components/ui/alert';
-  import * as Card from '$lib/components/ui/card';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import { Field } from '$lib/components/ui/field';
-  import { Input } from '$lib/components/ui/input';
-  import { Progress } from '$lib/components/ui/progress';
-  import * as Table from '$lib/components/ui/table';
-  import {
-    Activity,
-    ArrowUpRight,
-    CheckCircle2,
-    Clock3,
-    Mail,
-    MessageCircle,
-    Phone,
-    Star,
-    Users,
-    Zap
-  } from 'lucide-svelte';
+	import * as Card from '$lib/components/ui/card';
+	import * as Table from '$lib/components/ui/table';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import * as Field from '$lib/components/ui/field';
+	import * as Select from '$lib/components/ui/select';
+	import * as Tooltip from '$lib/components/ui/tooltip';
+	import * as Alert from '$lib/components/ui/alert';
+	import * as Avatar from '$lib/components/ui/avatar';
+	import * as Chart from '$lib/components/ui/chart';
+	import * as ToggleGroup from '$lib/components/ui/toggle-group';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import { Progress } from '$lib/components/ui/progress';
+	import { Separator } from '$lib/components/ui/separator';
+	import { Skeleton } from '$lib/components/ui/skeleton';
+	import * as Empty from '$lib/components/ui/empty';
+	import { Calendar } from '$lib/components/ui/calendar';
+	import { Spinner } from '$lib/components/ui/spinner';
+	import { cn } from '$lib/utils.js';
+	import { Phone, MessageCircle, Mail, Share2, Star, TriangleAlert, CircleCheck, Info, CalendarDays, Inbox } from 'lucide-svelte';
+	import { CalendarDate, type DateValue } from '@internationalized/date';
 
-  const channelStats = [
-    { label: 'Phone Calls', value: '248', detail: '212 terjawab · 85%', response: '3m 24s', satisfaction: '4.6/5', icon: Phone },
-    { label: 'Live Chat', value: '186', detail: '174 direspon · 94%', response: '42 detik', satisfaction: '4.8/5', icon: MessageCircle },
-    { label: 'Email', value: '124', detail: '96 dibalas · 77%', response: '2j 18m', satisfaction: '4.5/5', icon: Mail },
-    { label: 'Social Media', value: '92', detail: '81 direspon · 88%', response: '18 menit', satisfaction: '4.4/5', icon: Activity },
-    { label: 'WhatsApp Business', value: '316', detail: '294 direspon · 93%', response: '1m 06s', satisfaction: '4.9/5', icon: MessageCircle },
-    { label: 'Comment & More', value: '74', detail: '61 direspon · 82%', response: '26 menit', satisfaction: '4.3/5', icon: Zap }
-  ];
-
-  const alerts = [
-    { variant: 'warning' as const, icon: Clock3, text: '4 chat menunggu balasan lebih dari 5 menit' },
-    { variant: 'destructive' as const, icon: Activity, text: 'Tiket T-2026-001 membutuhkan perhatian segera' },
-    { variant: 'success' as const, icon: CheckCircle2, text: 'Semua channel aktif dan terhubung' }
-  ];
-
-  const recentTickets = [
-    { id: 'T-2026-001', subject: 'Keterlambatan pengiriman', channel: 'WhatsApp', owner: 'Rina', status: 'Urgent', variant: 'destructive' as const },
-    { id: 'T-2026-002', subject: 'Reset password akun', channel: 'Live Chat', owner: 'Budi', status: 'Open', variant: 'warning' as const },
-    { id: 'T-2026-003', subject: 'Permintaan invoice bulanan', channel: 'Email', owner: 'Sari', status: 'In progress', variant: 'secondary' as const }
-  ];
-
-  const channels = [
-    { label: 'WhatsApp', value: 82 },
-    { label: 'Live Chat', value: 68 },
-    { label: 'Email', value: 46 },
-    { label: 'Voice', value: 32 }
-  ];
+	const channels = [
+		{ key: 'phone', label: 'Phone Calls', icon: Phone, total: '248 panggilan', answered: '212 terjawab (85%)', avg: '3m 24s', score: '4.6/5' },
+		{ key: 'chat', label: 'Live Chat', icon: MessageCircle, total: '186 chat', answered: '174 direspon (94%)', avg: '42 detik', score: '4.8/5' },
+		{ key: 'email', label: 'Email', icon: Mail, total: '124 email', answered: '96 dibalas (77%)', avg: '2j 18m', score: '4.5/5' },
+		{ key: 'wa', label: 'WhatsApp Business', icon: MessageCircle, total: '316 chat', answered: '294 direspon (93%)', avg: '1m 06s', score: '4.9/5' },
+		{ key: 'soc', label: 'Social Media', icon: Share2, total: '92 interaksi', answered: '81 direspon (88%)', avg: '18 menit', score: '4.4/5' },
+		{ key: 'cmt', label: 'Comment & More', icon: Star, total: '74 interaksi', answered: '61 direspon (82%)', avg: '26 menit', score: '4.3/5' }
+	];
+	const tickets = [
+		{ id: 'T-2026-001', subject: 'Keterlambatan pengiriman', channel: 'WhatsApp', owner: 'Rina', status: 'Urgent' },
+		{ id: 'T-2026-002', subject: 'Reset password akun', channel: 'Live Chat', owner: 'Budi', status: 'Open' },
+		{ id: 'T-2026-003', subject: 'Permintaan invoice bulanan', channel: 'Email', owner: 'Sari', status: 'In Progress' }
+	];
+	const dist = [
+		{ label: 'WhatsApp', value: 82 }, { label: 'Live Chat', value: 68 },
+		{ label: 'Email', value: 46 }, { label: 'Voice', value: 32 }
+	];
+	let tab = $state('harian');
+	let range = $state('30h');
+	let loading = $state(false);
+	let date = $state<DateValue | undefined>(new CalendarDate(2026, 9, 30));
+	let period = $state('2026-09');
+	function apply() { loading = true; setTimeout(() => (loading = false), 600); }
+	const ApplyIcon = $derived(loading ? Spinner : CalendarDays);
+	const chartConfig = { volume: { label: 'Volume', color: 'var(--primary)' } };
+	const bars = [42, 68, 55, 80, 62, 90, 74];
 </script>
 
-<svelte:head><title>Home — DK UI Kit</title></svelte:head>
+<svelte:head><title>Home — Statistik Kanal</title></svelte:head>
 
 <div class="flex flex-col gap-6">
-  <Card.Root>
-    <Card.Header class="pb-3">
-      <Card.Title class="text-base">Filter periode</Card.Title>
-      <p class="text-sm text-muted-foreground">Pilih rentang tanggal untuk memperbarui metrik.</p>
-    </Card.Header>
-    <Card.Content>
-      <div class="grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
-        <Field.Field>
-          <Field.Label for="start-date">Start date</Field.Label>
-          <Input id="start-date" type="date" value="2026-09-30" />
-        </Field.Field>
-        <Field.Field>
-          <Field.Label for="end-date">End date</Field.Label>
-          <Input id="end-date" type="date" value="2026-09-30" />
-        </Field.Field>
-        <Button class="w-full md:w-auto"><Activity data-icon="inline-start" />Apply filter</Button>
-      </div>
-    </Card.Content>
-  </Card.Root>
+	<Card.Root>
+		<Card.Header><Card.Title>Statistik Kanal | Real-time Performance Monitoring</Card.Title><Card.Description>Filter rentang tanggal dan periode untuk memperbarui metrik kanal.</Card.Description></Card.Header>
+		<Card.Content class="flex flex-col gap-4">
+			<Field.FieldGroup class="grid gap-4 md:grid-cols-[1fr_1fr_auto]">
+				<Field.Field><Field.Label for="start">Start Date</Field.Label><Calendar type="single" bind:value={date} /></Field.Field>
+				<Field.Field>
+					<Field.Label for="period">Periode</Field.Label>
+					<Select.Root type="single" bind:value={period}>
+						<Select.Trigger id="period" class="w-full">{period}</Select.Trigger>
+						<Select.Content><Select.Group><Select.GroupHeading>Periode</Select.GroupHeading><Select.Item value="2026-08">Agustus 2026</Select.Item><Select.Item value="2026-09">September 2026</Select.Item><Select.Item value="2026-10">Oktober 2026</Select.Item></Select.Group></Select.Content>
+					</Select.Root>
+				</Field.Field>
+				<Field.Field><Field.Label>&nbsp;</Field.Label><Button onclick={apply} disabled={loading}><ApplyIcon data-icon="inline-start" /><span>{loading ? 'Memuat' : 'Apply Filter'}</span></Button></Field.Field>
+			</Field.FieldGroup>
+			<ToggleGroup.Root type="single" bind:value={range} class="w-fit" aria-label="Rentang">
+				<ToggleGroup.Item value="7h">7 hari</ToggleGroup.Item><ToggleGroup.Item value="30h">30 hari</ToggleGroup.Item><ToggleGroup.Item value="90h">90 hari</ToggleGroup.Item>
+			</ToggleGroup.Root>
+			<Tabs.Root bind:value={tab}>
+				<Tabs.List><Tabs.Trigger value="harian">Harian</Tabs.Trigger><Tabs.Trigger value="mingguan">Mingguan</Tabs.Trigger><Tabs.Trigger value="bulanan">Bulanan</Tabs.Trigger></Tabs.List>
+			</Tabs.Root>
+		</Card.Content>
+		<Card.Footer class="text-muted-foreground text-xs">Scope data: semua kanal · diperbarui real-time</Card.Footer>
+	</Card.Root>
 
-  <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Statistik kanal">
-    {#each channelStats as stat}
-      <Card.Root class="transition-shadow hover:shadow-md">
-        <Card.Header class="flex-row items-center gap-3 space-y-0 pb-3">
-          <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <stat.icon size={19} />
-          </div>
-          <div class="min-w-0">
-            <Card.Title class="truncate text-base">{stat.label}</Card.Title>
-            <p class="text-xs text-muted-foreground">Volume interaksi</p>
-          </div>
-        </Card.Header>
-        <Card.Content class="flex flex-col gap-3">
-          <div class="flex items-baseline justify-between gap-2">
-            <span class="text-2xl font-bold tracking-tight">{stat.value}</span>
-            <Badge variant="secondary">Aktif</Badge>
-          </div>
-          <div class="flex flex-col gap-2 text-xs">
-            <div class="flex items-center justify-between gap-2"><span class="text-muted-foreground">Respons</span><span class="font-medium">{stat.detail}</span></div>
-            <div class="flex items-center justify-between gap-2"><span class="text-muted-foreground">Rata-rata response</span><span class="font-medium">{stat.response}</span></div>
-            <div class="flex items-center justify-between gap-2"><span class="flex items-center gap-1 text-muted-foreground"><Star size={13} /> Kepuasan</span><span class="font-medium">{stat.satisfaction}</span></div>
-          </div>
-        </Card.Content>
-      </Card.Root>
-    {/each}
-  </section>
+	{#if loading}
+		<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{#each [1, 2, 3] as _}<Skeleton class="h-44 w-full" />{/each}</div>
+	{:else}
+		<section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Statistik kanal">
+			{#each channels as c}
+				<Card.Root class={cn('transition-shadow hover:shadow-md', c.key === 'wa' && 'border-primary/40')}>
+					<Card.Header class="flex-row items-center gap-3">
+						<div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"><c.icon data-icon="card" /></div>
+						<div class="min-w-0 flex-1"><Card.Title class="truncate text-base">{c.label}</Card.Title><Card.Description>Total: {c.total}</Card.Description></div>
+						<Tooltip.Root><Tooltip.Trigger><Badge variant="secondary">Aktif</Badge></Tooltip.Trigger><Tooltip.Content>Kanal terhubung</Tooltip.Content></Tooltip.Root>
+					</Card.Header>
+					<Card.Content class="flex flex-col gap-2 text-sm">
+						<div class="flex items-center justify-between gap-2"><span class="text-muted-foreground">Respons</span><span class="font-medium">{c.answered}</span></div>
+						<div class="flex items-center justify-between gap-2"><span class="text-muted-foreground">Rata-rata</span><span class="font-medium">{c.avg}</span></div>
+						<div class="flex items-center justify-between gap-2"><span class="text-muted-foreground">Kepuasan</span><span class="font-medium">{c.score}</span></div>
+					</Card.Content>
+					<Card.Footer><Progress value={85} class="w-full" /></Card.Footer>
+				</Card.Root>
+			{/each}
+		</section>
+	{/if}
 
-  <div class="grid gap-4 lg:grid-cols-[1fr_1.2fr]">
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>Kanal paling ramai</Card.Title>
-        <p class="text-sm text-muted-foreground">Distribusi volume interaksi hari ini.</p>
-      </Card.Header>
-      <Card.Content class="flex flex-col gap-4">
-        {#each channels as channel}
-          <div class="flex flex-col gap-2">
-            <div class="flex justify-between text-sm"><span class="font-medium">{channel.label}</span><span class="text-muted-foreground">{channel.value}%</span></div>
-            <Progress value={channel.value} />
-          </div>
-        {/each}
-      </Card.Content>
-    </Card.Root>
+	<Alert.Root variant="warning"><TriangleAlert data-icon="alert" /><Alert.Description>4 chat menunggu balasan lebih dari 5 menit.</Alert.Description></Alert.Root>
+	<Alert.Root variant="success"><CircleCheck data-icon="alert" /><Alert.Description>Semua channel aktif dan terhubung.</Alert.Description></Alert.Root>
 
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>Perlu perhatian</Card.Title>
-        <p class="text-sm text-muted-foreground">Sinyal operasional yang perlu ditindaklanjuti.</p>
-      </Card.Header>
-      <Card.Content class="flex flex-col gap-2">
-        {#each alerts as alert}
-          <Alert.Root variant={alert.variant}>
-            <alert.icon />
-            <Alert.Description>{alert.text}</Alert.Description>
-          </Alert.Root>
-        {/each}
-        <div class="mt-2 flex flex-wrap gap-2">
-          <Button href="/chat/v3" size="sm">Buka chat</Button>
-          <Button href="/ticketing" size="sm" variant="outline">Lihat tiket</Button>
-        </div>
-      </Card.Content>
-    </Card.Root>
-  </div>
-
-  <Card.Root>
-    <Card.Header class="flex-row items-center justify-between space-y-0">
-      <div><Card.Title>Tiket terbaru</Card.Title><p class="mt-1 text-sm text-muted-foreground">Aktivitas tiket yang terakhir diperbarui.</p></div>
-      <Button href="/ticketing" variant="ghost" size="sm">Lihat semua <ArrowUpRight data-icon="inline-end" /></Button>
-    </Card.Header>
-    <Card.Content>
-      <div class="overflow-x-auto">
-        <Table.Root>
-          <Table.Header>
-            <Table.Row>
-              <Table.Head>ID tiket</Table.Head><Table.Head>Subjek</Table.Head><Table.Head class="hidden md:table-cell">Channel</Table.Head><Table.Head class="hidden md:table-cell">Owner</Table.Head><Table.Head class="text-right">Status</Table.Head>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {#each recentTickets as ticket}
-              <Table.Row>
-                <Table.Cell class="font-mono text-xs font-semibold">{ticket.id}</Table.Cell>
-                <Table.Cell class="min-w-48 font-medium">{ticket.subject}</Table.Cell>
-                <Table.Cell class="hidden md:table-cell">{ticket.channel}</Table.Cell>
-                <Table.Cell class="hidden md:table-cell">{ticket.owner}</Table.Cell>
-                <Table.Cell class="text-right"><Badge variant={ticket.variant}>{ticket.status}</Badge></Table.Cell>
-              </Table.Row>
-            {/each}
-          </Table.Body>
-        </Table.Root>
-      </div>
-    </Card.Content>
-  </Card.Root>
+	<div class="grid gap-4 lg:grid-cols-2">
+		<Card.Root>
+			<Card.Header><Card.Title>Volume kanal</Card.Title><Card.Description>Distribusi 7 hari terakhir.</Card.Description></Card.Header>
+			<Card.Content>
+				<Chart.Container config={chartConfig} class="min-h-40">
+					<div class="flex h-36 w-full items-end gap-2">{#each bars as b}<div class="flex-1 rounded bg-primary/80" style="height:{b}%"></div>{/each}</div>
+				</Chart.Container>
+			</Card.Content>
+			<Card.Footer class="flex flex-col gap-3">
+				{#each dist as d}<div class="flex flex-col gap-1.5"><div class="flex justify-between text-sm"><span>{d.label}</span><span class="text-muted-foreground">{d.value}%</span></div><Progress value={d.value} /></div>{/each}
+			</Card.Footer>
+		</Card.Root>
+		<Card.Root>
+			<Card.Header><Card.Title>Tiket terbaru</Card.Title><Card.Description>Aktivitas tiket terakhir.</Card.Description></Card.Header>
+			<Card.Content>
+				{#if tickets.length === 0}
+					<Empty.Root><Empty.Header><Empty.Media><Inbox data-icon="empty" /></Empty.Media><Empty.Title>Belum ada tiket</Empty.Title><Empty.Description>Tiket baru akan muncul di sini.</Empty.Description></Empty.Header></Empty.Root>
+				{:else}
+					<Table.Root><Table.Header><Table.Row><Table.Head>ID</Table.Head><Table.Head>Subjek</Table.Head><Table.Head>Owner</Table.Head><Table.Head class="text-right">Status</Table.Head></Table.Row></Table.Header>
+					<Table.Body>{#each tickets as t}<Table.Row><Table.Cell class="font-mono text-xs">{t.id}</Table.Cell><Table.Cell><div class="flex items-center gap-2"><Avatar.Root class="size-6"><Avatar.Fallback>{t.owner.slice(0, 1)}</Avatar.Fallback></Avatar.Root><span class="font-medium">{t.subject}</span></div></Table.Cell><Table.Cell>{t.owner}</Table.Cell><Table.Cell class="text-right"><Badge variant={t.status === 'Urgent' ? 'destructive' : 'secondary'}>{t.status}</Badge></Table.Cell></Table.Row>{/each}</Table.Body></Table.Root>
+				{/if}
+			</Card.Content>
+			<Card.Footer><Separator class="my-1" /><p class="text-muted-foreground flex items-center gap-1 text-xs"><Info data-icon="inline" /> Menampilkan 3 tiket terbaru</p></Card.Footer>
+		</Card.Root>
+	</div>
 </div>
+

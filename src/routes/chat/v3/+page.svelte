@@ -1,184 +1,185 @@
 <script lang="ts">
-  import * as Card from '$lib/components/ui/card';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import * as Tabs from '$lib/components/ui/tabs';
-  import * as Avatar from '$lib/components/ui/avatar';
-  import * as Message from '$lib/components/ui/message';
-  import * as Bubble from '$lib/components/ui/bubble';
-  import * as InputGroup from '$lib/components/ui/input-group';
-  import { Send, Paperclip, Smile } from 'lucide-svelte';
-  import { threads, tickets } from '$lib/mock';
+	import * as Card from '$lib/components/ui/card';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import * as Avatar from '$lib/components/ui/avatar';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import * as Tooltip from '$lib/components/ui/tooltip';
+	import * as ScrollArea from '$lib/components/ui/scroll-area';
+	import * as Resizable from '$lib/components/ui/resizable';
+	import * as Sheet from '$lib/components/ui/sheet';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import * as InputGroup from '$lib/components/ui/input-group';
+	import * as Message from '$lib/components/ui/message';
+	import * as Bubble from '$lib/components/ui/bubble';
+	import ChatBubble from '$lib/components/ui/chat-bubble.svelte';
+	import ChatInput from '$lib/components/ui/chat-input.svelte';
+	import { Separator } from '$lib/components/ui/separator';
+	import * as Empty from '$lib/components/ui/empty';
+	import { Skeleton } from '$lib/components/ui/skeleton';
+	import { toast } from 'svelte-sonner';
+	import { cn } from '$lib/utils';
+	import { Search, Send, Paperclip, Smile, Phone, MoreVertical, Inbox, CheckCheck } from 'lucide-svelte';
 
-  let selected = $state(threads[0]);
-  let draft = $state('');
-  let sideTab = $state('profile');
-  let messages = $state([
-    { id: 1, from: 'customer' as const, body: 'Halo, paket saya belum sampai?', time: '10:20' },
-    { id: 2, from: 'agent' as const, body: 'Halo kak, boleh info nomor resinya?', time: '10:22' },
-    { id: 3, from: 'customer' as const, body: 'Resi JNE123456789', time: '10:23' }
-  ]);
-
-  const initials = (name: string) =>
-    name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
-
-  function sendMessage() {
-    if (!draft.trim()) return;
-    messages = [...messages, { id: Date.now(), from: 'agent' as const, body: draft, time: 'Baru saja' }];
-    draft = '';
-  }
-
-  // Enter = baris baru, Ctrl/Cmd+Enter = kirim
-  function onInputKeydown(e: KeyboardEvent) {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-      e.preventDefault();
-      sendMessage();
-    }
-  }
+	const queues = [
+		{ id: 1, customer: 'Budi Santoso', channel: 'WhatsApp', last: 'Halo, paket saya belum sampai?', time: '10:20', unread: 3, status: 'open' },
+		{ id: 2, customer: 'Siti Aminah', channel: 'Email', last: 'Mohon info pengajuan KTP…', time: '09:45', unread: 1, status: 'pending' },
+		{ id: 3, customer: 'Andi Wijaya', channel: 'Live Chat', last: 'Terima kasih atas bantuannya', time: '08:15', unread: 0, status: 'resolved' }
+	];
+	let selected = $state(queues[0]);
+	let draft = $state('');
+	let loading = $state(false);
+	let messages = $state([
+		{ id: 1, from: 'customer' as const, body: 'Halo, paket saya belum sampai?', time: '10:20' },
+		{ id: 2, from: 'agent' as const, body: 'Halo kak, boleh info nomor resinya?', time: '10:22' },
+		{ id: 3, from: 'customer' as const, body: 'Resi JNE123456789', time: '10:23' }
+	]);
+	const initials = (n: string) => n.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+	function send() {
+		if (!draft.trim()) return;
+		messages = [...messages, { id: Date.now(), from: 'agent' as const, body: draft, time: 'now' }];
+		draft = '';
+		toast.success('Pesan terkirim');
+	}
+	function simulateLoad() { loading = true; setTimeout(() => (loading = false), 900); }
 </script>
 
-<svelte:head><title>Chat — DK UI Kit</title></svelte:head>
+<svelte:head><title>Chat v3 — DK UI Kit</title></svelte:head>
 
-<div class="flex h-[calc(100vh-8rem)] flex-col gap-3 xl:flex-row">
-  <!-- Thread List -->
-  <Card.Root class="flex w-full shrink-0 flex-col overflow-hidden xl:w-72">
-    <div class="divide-y divide-border">
-      {#each threads as t (t.id)}
-        <button
-          onclick={() => (selected = t)}
-          class="flex w-full gap-3 p-4 text-left transition-colors hover:bg-muted/50"
-          class:bg-muted={selected.id === t.id}
-        >
-          <Avatar.Root>
-            <Avatar.Fallback>{initials(t.customer)}</Avatar.Fallback>
-          </Avatar.Root>
-          <span class="min-w-0 flex-1">
-            <span class="flex justify-between gap-2">
-              <strong class="truncate text-sm">{t.customer}</strong>
-              <span class="text-[11px] text-muted-foreground">{t.time}</span>
-            </span>
-            <span class="mt-0.5 block truncate text-xs text-muted-foreground">{t.last}</span>
-          </span>
-        </button>
-      {/each}
-    </div>
-  </Card.Root>
+<div class="flex flex-col gap-3">
+	<Tabs.Root value="all">
+		<Tabs.List>
+			<Tabs.Trigger value="all">Semua Antrian</Tabs.Trigger>
+			<Tabs.Trigger value="mine">Milik Saya</Tabs.Trigger>
+			<Tabs.Trigger value="unassigned">Unassigned</Tabs.Trigger>
+		</Tabs.List>
+	</Tabs.Root>
 
-  <!-- Chat Area -->
-  <Card.Root class="flex min-h-0 flex-1 flex-col overflow-hidden">
-    <!-- Header -->
-    <div class="flex shrink-0 items-center gap-3 border-b border-border px-4 py-3">
-      <Avatar.Root>
-        <Avatar.Fallback>{initials(selected.customer)}</Avatar.Fallback>
-      </Avatar.Root>
-      <div class="flex-1">
-        <strong class="text-sm">{selected.customer}</strong>
-        <Badge variant={selected.status === 'open' ? 'success' : 'warning'} class="ml-2">{selected.status}</Badge>
-      </div>
-      <Button size="sm" variant="secondary" href="/chat/v3/ticket/result">Lihat tiket</Button>
-    </div>
-
-    <!-- Messages -->
-    <div class="flex flex-1 flex-col gap-4 overflow-y-auto bg-muted/30 p-4">
-      {#each messages as m (m.id)}
-        <Message.Root align={m.from === 'agent' ? 'end' : 'start'}>
-          <Message.Avatar>
-            <Avatar.Root class="size-8 text-xs">
-              <Avatar.Fallback>{m.from === 'customer' ? initials(selected.customer) : 'AG'}</Avatar.Fallback>
-            </Avatar.Root>
-          </Message.Avatar>
-          <Message.Content class="max-w-[75%]">
-            <Bubble.Root variant={m.from === 'agent' ? 'default' : 'outline'} align={m.from === 'agent' ? 'end' : 'start'}>
-              <Bubble.Content>{m.body}</Bubble.Content>
-            </Bubble.Root>
-            <Message.Footer>{m.time}</Message.Footer>
-          </Message.Content>
-        </Message.Root>
-      {/each}
-    </div>
-
-    <!-- Input: shadcn InputGroup, Enter = baris baru, Ctrl/Cmd+Enter = kirim -->
-    <div class="shrink-0 border-t border-border p-3">
-      <InputGroup.Root class="gap-1 py-2">
-        <InputGroup.Addon align="inline-start">
-          <InputGroup.Button variant="ghost" size="icon-sm" aria-label="Lampirkan file">
-            <Paperclip />
-          </InputGroup.Button>
-          <InputGroup.Button variant="ghost" size="icon-sm" aria-label="Tambah emoji">
-            <Smile />
-          </InputGroup.Button>
-        </InputGroup.Addon>
-        <InputGroup.Textarea
-          bind:value={draft}
-          placeholder="Tulis balasan… (Enter = baris baru, Ctrl+Enter = kirim)"
-          rows={1}
-          class="max-h-32 min-h-9 resize-none border-0 shadow-none"
-          onkeydown={onInputKeydown}
-        />
-        <InputGroup.Addon align="inline-end">
-          <InputGroup.Button variant="default" size="icon-sm" onclick={sendMessage} disabled={!draft.trim()} aria-label="Kirim pesan">
-            <Send />
-          </InputGroup.Button>
-        </InputGroup.Addon>
-      </InputGroup.Root>
-    </div>
-  </Card.Root>
-
-  <!-- Side Panel -->
-  <Card.Root class="hidden w-full shrink-0 flex-col overflow-hidden xl:flex xl:w-80">
-    <Tabs.Root bind:value={sideTab} class="flex min-h-0 flex-1 flex-col">
-      <Tabs.List class="w-full justify-start rounded-none border-b bg-transparent p-0">
-        <Tabs.Trigger value="profile" class="rounded-none px-3 py-2 text-xs">Profil</Tabs.Trigger>
-        <Tabs.Trigger value="ticket" class="rounded-none px-3 py-2 text-xs">Tiket</Tabs.Trigger>
-        <Tabs.Trigger value="history" class="rounded-none px-3 py-2 text-xs">Riwayat</Tabs.Trigger>
-      </Tabs.List>
-      <div class="flex-1 overflow-auto p-4">
-        {#if sideTab === 'profile'}
-          <div class="mb-4 flex items-center gap-3">
-            <Avatar.Root>
-              <Avatar.Fallback>{initials(selected.customer)}</Avatar.Fallback>
-            </Avatar.Root>
-            <div>
-              <div class="font-bold">{selected.customer}</div>
-              <div class="text-xs text-muted-foreground">Customer sejak 2023</div>
-            </div>
-          </div>
-          <dl class="flex flex-col gap-3 text-sm">
-            <div class="flex justify-between">
-              <dt class="text-muted-foreground">Kanal</dt>
-              <dd class="font-medium">{selected.channel}</dd>
-            </div>
-            <div class="flex justify-between">
-              <dt class="text-muted-foreground">Segment</dt>
-              <dd class="font-medium">VIP</dd>
-            </div>
-            <div class="flex justify-between">
-              <dt class="text-muted-foreground">Total tiket</dt>
-              <dd class="font-medium">7</dd>
-            </div>
-          </dl>
-        {:else if sideTab === 'ticket'}
-          <Button href="/ticketing" size="sm" class="w-full">Buat tiket baru</Button>
-          <ul class="mt-4 flex flex-col gap-2">
-            {#each tickets.slice(0, 3) as t (t.number)}
-              <li class="rounded-lg border border-border p-3 text-xs">
-                <div class="flex justify-between gap-2">
-                  <span class="font-mono font-semibold">{t.number}</span>
-                  <span>— {t.subject}</span>
-                </div>
-                <a href="/ticketing" class="mt-1 block font-semibold text-primary">Buka</a>
-              </li>
-            {/each}
-          </ul>
-        {:else}
-          <ul class="flex flex-col gap-2 text-xs">
-            <li class="rounded-lg border border-border p-3">Chat 12 Sep — resolved oleh Kirana</li>
-            <li class="rounded-lg border border-border p-3">Tiket T-2026-001 — open</li>
-            <li class="rounded-lg border border-border p-3">Email 28 Agu — dibalas</li>
-          </ul>
-        {/if}
-      </div>
-    </Tabs.Root>
-  </Card.Root>
+	<Resizable.PaneGroup direction="horizontal" class="min-h-[70vh] gap-3">
+		<Resizable.Pane defaultSize={30}>
+			<Card.Root class="flex h-full flex-col">
+				<Card.Header class="flex flex-row items-center gap-2">
+					<InputGroup.Root>
+						<InputGroup.Addon><Search class="size-4" /></InputGroup.Addon>
+						<InputGroup.Input placeholder="Cari antrian…" />
+					</InputGroup.Root>
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger>
+							{#snippet child({ props })}
+								<Button size="icon" variant="outline" {...props}><MoreVertical class="size-4" /></Button>
+							{/snippet}
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content>
+							<DropdownMenu.Group>
+								<DropdownMenu.GroupHeading>Filter kanal</DropdownMenu.GroupHeading>
+								<DropdownMenu.Item>Semua</DropdownMenu.Item>
+								<DropdownMenu.Item>WhatsApp</DropdownMenu.Item>
+								<DropdownMenu.Item>Email</DropdownMenu.Item>
+							</DropdownMenu.Group>
+							<DropdownMenu.Separator />
+							<DropdownMenu.Group>
+								<DropdownMenu.Item>Belum dibaca</DropdownMenu.Item>
+								<DropdownMenu.Item>Assigned ke saya</DropdownMenu.Item>
+							</DropdownMenu.Group>
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
+				</Card.Header>
+				<Separator />
+				<ScrollArea.Root class="h-[55vh]">
+					<div class="flex flex-col gap-2 p-3">
+						{#each queues as q (q.id)}
+							<button onclick={() => { selected = q; simulateLoad(); }} class={cn('flex items-center gap-3 rounded-lg p-3 text-left hover:bg-muted/50', selected.id === q.id && 'bg-muted')}>
+								<Avatar.Root><Avatar.Fallback>{initials(q.customer)}</Avatar.Fallback></Avatar.Root>
+								<span class="min-w-0 flex-1">
+									<span class="flex items-center gap-2"><strong class="truncate text-sm">{q.customer}</strong><Badge variant="outline" class="text-[10px]">{q.channel}</Badge></span>
+									<span class="truncate text-xs text-muted-foreground">{q.last}</span>
+								</span>
+								{#if q.unread}<span class="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">{q.unread}</span>{/if}
+							</button>
+						{/each}
+					</div>
+				</ScrollArea.Root>
+			</Card.Root>
+		</Resizable.Pane>
+		<Resizable.Handle />
+		<Resizable.Pane defaultSize={70}>
+			<Card.Root class="flex h-full flex-col">
+				<Card.Header class="flex flex-row items-center gap-3">
+					<Avatar.Root><Avatar.Fallback>{initials(selected.customer)}</Avatar.Fallback></Avatar.Root>
+					<div class="flex flex-1 flex-col gap-0.5">
+						<strong class="text-sm">{selected.customer}</strong>
+						<span class="text-xs text-muted-foreground">{selected.channel} • {selected.time}</span>
+					</div>
+					<Badge variant="secondary">{selected.status}</Badge>
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								{#snippet child({ props })}
+									<Button size="icon" variant="outline" {...props}><Phone class="size-4" /></Button>
+								{/snippet}
+							</Tooltip.Trigger>
+							<Tooltip.Content>Mulai panggilan</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
+					<Sheet.Root>
+						<Sheet.Trigger>
+							{#snippet child({ props })}
+								<Button size="sm" variant="outline" {...props}>Detail</Button>
+							{/snippet}
+						</Sheet.Trigger>
+						<Sheet.Content>
+							<Sheet.Header><Sheet.Title>Detail Tiket</Sheet.Title></Sheet.Header>
+							<div class="flex flex-col gap-2 p-4 text-sm">
+								<p><strong>ID:</strong> TCK-2026-001</p><p><strong>Pelanggan:</strong> {selected.customer}</p><p><strong>Kanal:</strong> {selected.channel}</p>
+								<Separator />
+								<p class="text-muted-foreground">Riwayat tiket, SLA, dan assignee ditampilkan di sini meniru panel blade.</p>
+							</div>
+						</Sheet.Content>
+					</Sheet.Root>
+					<Dialog.Root>
+						<Dialog.Trigger>
+							{#snippet child({ props })}
+								<Button size="sm" {...props}>Resolve</Button>
+							{/snippet}
+						</Dialog.Trigger>
+						<Dialog.Content>
+							<Dialog.Header><Dialog.Title>Selesaikan tiket?</Dialog.Title></Dialog.Header>
+							<p class="text-sm text-muted-foreground">Tiket akan ditandai selesai dan masuk ke Result Ticket.</p>
+							<Dialog.Footer><Button onclick={() => toast.success('Tiket diselesaikan')}>Ya, selesaikan</Button></Dialog.Footer>
+						</Dialog.Content>
+					</Dialog.Root>
+				</Card.Header>
+				<Separator />
+				<ScrollArea.Root class="h-[45vh] p-4">
+					{#if loading}
+						<div class="flex flex-col gap-2"><Skeleton class="h-10 w-2/3" /><Skeleton class="h-10 w-1/2 self-end" /><Skeleton class="h-10 w-2/3" /></div>
+					{:else if messages.length === 0}
+						<Empty.Root><Empty.Header><Empty.Title>Belum ada pesan</Empty.Title><Empty.Description>Mulai percakapan dengan pelanggan.</Empty.Description></Empty.Header></Empty.Root>
+					{:else}
+						<Message.Group>
+							{#each messages as m (m.id)}
+								<Message.Root class={cn('flex', m.from === 'agent' && 'justify-end')}>
+									{#if m.from === 'customer'}<Message.Avatar><Avatar.Root><Avatar.Fallback>{initials(selected.customer)}</Avatar.Fallback></Avatar.Root></Message.Avatar>{/if}
+									<div class="flex flex-col gap-1">
+										<Bubble.Root variant={m.from === 'agent' ? 'sent' : 'received'}><Bubble.Content>{m.body}</Bubble.Content></Bubble.Root>
+										<Message.Footer>{m.time} {#if m.from === 'agent'}<CheckCheck class="size-3" />{/if}</Message.Footer>
+									</div>
+								</Message.Root>
+							{/each}
+						</Message.Group>
+						<div class="mt-2 flex flex-col gap-1"><ChatBubble from="agent" body="Contoh chat-bubble legacy: paket Anda sedang dalam pengiriman." time="10:24" /></div>
+					{/if}
+				</ScrollArea.Root>
+				<Card.Footer class="flex-col gap-2">
+					<ChatInput bind:value={draft} onSend={send} />
+					<InputGroup.Root>
+						<InputGroup.Addon><Paperclip class="size-4" /><Smile class="size-4" /></InputGroup.Addon>
+						<InputGroup.Input bind:value={draft} placeholder="Ketik pesan… (Ctrl+Enter kirim)" onkeydown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) send(); }} />
+						<InputGroup.Button onclick={send}><Send class="size-4" /> Kirim</InputGroup.Button>
+					</InputGroup.Root>
+				</Card.Footer>
+			</Card.Root>
+		</Resizable.Pane>
+	</Resizable.PaneGroup>
 </div>

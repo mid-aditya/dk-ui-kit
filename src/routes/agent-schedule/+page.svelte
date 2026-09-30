@@ -1,33 +1,84 @@
 <script lang="ts">
-  import * as Card from '$lib/components/ui/card';
-  import * as Table from '$lib/components/ui/table';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import { Search, Plus, RefreshCw, CalendarDays, Users, ChevronRight } from 'lucide-svelte';
+	import * as Card from '$lib/components/ui/card';
+	import * as Table from '$lib/components/ui/table';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import * as Field from '$lib/components/ui/field';
+	import * as Select from '$lib/components/ui/select';
+	import * as Tooltip from '$lib/components/ui/tooltip';
+	import * as Alert from '$lib/components/ui/alert';
+	import * as Avatar from '$lib/components/ui/avatar';
+	import * as Chart from '$lib/components/ui/chart';
+	import * as ToggleGroup from '$lib/components/ui/toggle-group';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import { Progress } from '$lib/components/ui/progress';
+	import { Separator } from '$lib/components/ui/separator';
+	import { Skeleton } from '$lib/components/ui/skeleton';
+	import { Input } from '$lib/components/ui/input';
+	import * as Empty from '$lib/components/ui/empty';
+	import { Calendar } from '$lib/components/ui/calendar';
+	import { Spinner } from '$lib/components/ui/spinner';
+	import { cn } from '$lib/utils.js';
+	import { Plus, Search, RefreshCw, ChevronRight, CalendarDays, Info, CalendarClock } from 'lucide-svelte';
+	import { CalendarDate, type DateValue } from '@internationalized/date';
 
-  let query = $state('');
-  const schedules = [
-    { date: '30 Sep 2026', agents: 12, channels: ['Omnichat', 'Inbound Call'], status: 'Terjadwal' },
-    { date: '01 Okt 2026', agents: 14, channels: ['Omnichat', 'Email', 'Inbound Call'], status: 'Terjadwal' },
-    { date: '02 Okt 2026', agents: 13, channels: ['Omnichat', 'Email'], status: 'Terjadwal' },
-    { date: '03 Okt 2026', agents: 8, channels: ['Omnichat'], status: 'Terbatas' },
-    { date: '04 Okt 2026', agents: 0, channels: [], status: 'Libur' }
-  ];
-  let filtered = $derived(schedules.filter((item) => item.date.toLowerCase().includes(query.toLowerCase())));
+	let q = $state(''); let status = $state('semua'); let tab = $state('daftar'); let loading = $state(false); let open = $state(false);
+	let date = $state<DateValue | undefined>(new CalendarDate(2026, 9, 30));
+	const schedules = [
+		{ date: '30 Sep 2026', agents: 12, channels: ['Omnichannel', 'Inbound Call'], status: 'Terjadwal', cap: 92 },
+		{ date: '01 Okt 2026', agents: 14, channels: ['Omnichannel', 'Email', 'Inbound Call'], status: 'Terjadwal', cap: 96 },
+		{ date: '02 Okt 2026', agents: 13, channels: ['Omnichannel', 'Email'], status: 'Terjadwal', cap: 88 },
+		{ date: '03 Okt 2026', agents: 8, channels: ['Omnichannel'], status: 'Terbatas', cap: 55 },
+		{ date: '04 Okt 2026', agents: 0, channels: [], status: 'Libur', cap: 0 }
+	];
+	let filtered = $derived(schedules.filter((s) => s.date.toLowerCase().includes(q.toLowerCase()) && (status === 'semua' || s.status === status)));
+	function search() { loading = true; setTimeout(() => (loading = false), 500); }
+	const BtnIcon = $derived(loading ? Spinner : Search);
+	const chartConfig = { agents: { label: 'Agent', color: 'var(--primary)' } };
 </script>
 
-<svelte:head><title>Agent Schedule — DK UI Kit</title></svelte:head>
+<svelte:head><title>Agent Schedule</title></svelte:head>
 
 <div class="flex flex-col gap-6">
-  <Card.Root>
-    <Card.Header class="flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div><Card.Title>Daftar jadwal agent</Card.Title><p class="mt-1 text-sm text-muted-foreground">{filtered.length} jadwal ditemukan dari mock workspace.</p></div>
-      <Button><Plus data-icon="inline-start" />Tambah jadwal</Button>
-    </Card.Header>
-    <Card.Content class="flex flex-col gap-4">
-      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"><div class="relative w-full sm:max-w-sm"><Search size={16} class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><Input bind:value={query} class="pl-9" placeholder="Cari tanggal jadwal..." aria-label="Cari jadwal" /></div><Button variant="outline" size="sm"><RefreshCw data-icon="inline-start" />Reset</Button></div>
-      <div class="overflow-x-auto rounded-lg border border-border"><Table.Root><Table.Header><Table.Row><Table.Head>No</Table.Head><Table.Head>Tanggal</Table.Head><Table.Head>Jumlah agent</Table.Head><Table.Head>Channel</Table.Head><Table.Head>Status</Table.Head><Table.Head class="text-right">Aksi</Table.Head></Table.Row></Table.Header><Table.Body>{#each filtered as item, index}<Table.Row><Table.Cell class="text-muted-foreground">{index + 1}</Table.Cell><Table.Cell class="font-medium">{item.date}</Table.Cell><Table.Cell><span class="flex items-center gap-2"><Users size={15} class="text-muted-foreground" />{item.agents} agent</span></Table.Cell><Table.Cell><div class="flex min-w-48 flex-wrap gap-1.5">{#each item.channels as channel}<Badge variant="secondary">{channel}</Badge>{:else}<span class="text-sm text-muted-foreground">—</span>{/each}</div></Table.Cell><Table.Cell><Badge variant={item.status === 'Terjadwal' ? 'success' : item.status === 'Terbatas' ? 'warning' : 'secondary'}>{item.status}</Badge></Table.Cell><Table.Cell class="text-right"><Button variant="ghost" size="sm" aria-label={`Lihat jadwal ${item.date}`}>Detail <ChevronRight data-icon="inline-end" /></Button></Table.Cell></Table.Row>{/each}</Table.Body></Table.Root></div>
-    </Card.Content>
-  </Card.Root>
+	<Card.Root>
+		<Card.Header class="flex-row items-center justify-between gap-3"><div><Card.Title>Daftar Jadwal Agent</Card.Title><Card.Description>Cari nama / username / email · {filtered.length} entri</Card.Description></div><Button onclick={() => (open = true)}><Plus data-icon="inline-start" />Tambah Jadwal</Button></Card.Header>
+		<Card.Content class="flex flex-col gap-4">
+			<Field.FieldGroup class="grid gap-4 md:grid-cols-[1fr_200px_auto]">
+				<Field.Field><Field.Label for="q">Pencarian</Field.Label><div class="relative"><Search data-icon="input" /><Input id="q" bind:value={q} placeholder="Cari nama / username / email" class="pl-9" /></div></Field.Field>
+				<Field.Field>
+					<Field.Label for="st">Status</Field.Label>
+					<Select.Root type="single" bind:value={status}><Select.Trigger id="st" class="w-full">{status}</Select.Trigger><Select.Content><Select.Group><Select.GroupHeading>Status</Select.GroupHeading><Select.Item value="semua">Semua</Select.Item><Select.Item value="Terjadwal">Terjadwal</Select.Item><Select.Item value="Terbatas">Terbatas</Select.Item><Select.Item value="Libur">Libur</Select.Item></Select.Group></Select.Content></Select.Root>
+				</Field.Field>
+				<Field.Field><Field.Label>&nbsp;</Field.Label><div class="flex gap-2"><Button onclick={search} disabled={loading}><BtnIcon data-icon="inline-start" /><span>{loading ? 'Mencari' : 'Cari'}</span></Button><Button variant="outline" onclick={() => (q = '')}><RefreshCw data-icon="inline-start" />Reset</Button></div></Field.Field>
+			</Field.FieldGroup>
+			<ToggleGroup.Root type="single" bind:value={tab} aria-label="Tampilan"><ToggleGroup.Item value="daftar">Daftar</ToggleGroup.Item><ToggleGroup.Item value="kalender">Kalender</ToggleGroup.Item></ToggleGroup.Root>
+			<Tabs.Root bind:value={tab}><Tabs.List><Tabs.Trigger value="daftar">Daftar</Tabs.Trigger><Tabs.Trigger value="kalender">Kalender</Tabs.Trigger></Tabs.List></Tabs.Root>
+		</Card.Content>
+		<Card.Footer class="text-muted-foreground text-xs">Showing {filtered.length} of {schedules.length} entries</Card.Footer>
+	</Card.Root>
+
+	{#if tab === 'kalender'}
+		<Card.Root><Card.Header><Card.Title>Kalender jadwal</Card.Title><Card.Description>Pilih tanggal untuk melihat detail.</Card.Description></Card.Header><Card.Content><Calendar type="single" bind:value={date} /></Card.Content><Card.Footer><p class="text-muted-foreground text-xs">Tanggal terpilih: {date?.toString() ?? '-'}</p></Card.Footer></Card.Root>
+	{:else}
+		<Card.Root>
+			<Card.Header><Card.Title>Jadwal per tanggal</Card.Title><Card.Description>Kolom: No, Tanggal, Jumlah Agent, Channel, Aksi.</Card.Description></Card.Header>
+			<Card.Content class="flex flex-col gap-4">
+				<Chart.Container config={chartConfig} class="min-h-32"><div class="flex h-28 w-full items-end gap-2">{#each filtered as s}<div class="flex-1 rounded bg-primary/80" style="height:{s.cap}%"></div>{/each}</div></Chart.Container>
+				{#if loading}
+					<div class="flex flex-col gap-2">{#each [1, 2, 3] as _}<Skeleton class="h-12 w-full" />{/each}</div>
+				{:else if filtered.length === 0}
+					<Empty.Root><Empty.Header><Empty.Media><CalendarClock data-icon="empty" /></Empty.Media><Empty.Title>Tidak ada jadwal</Empty.Title><Empty.Description>Tambah jadwal baru untuk tanggal ini.</Empty.Description></Empty.Header><Empty.Content><Button size="sm" onclick={() => (open = true)}><Plus data-icon="inline-start" />Tambah Jadwal</Button></Empty.Content></Empty.Root>
+				{:else}
+					<Table.Root><Table.Header><Table.Row><Table.Head>No</Table.Head><Table.Head>Tanggal</Table.Head><Table.Head>Jumlah Agent</Table.Head><Table.Head>Channel</Table.Head><Table.Head>Kapasitas</Table.Head><Table.Head class="text-right">Aksi</Table.Head></Table.Row></Table.Header>
+					<Table.Body>{#each filtered as s, i}<Table.Row><Table.Cell class="text-muted-foreground">{i + 1}</Table.Cell><Table.Cell class="font-medium">{s.date}</Table.Cell><Table.Cell><span class="flex items-center gap-2"><Avatar.Root class="size-6"><Avatar.Fallback>{String(s.agents)}</Avatar.Fallback></Avatar.Root>{s.agents} agent</span></Table.Cell><Table.Cell><div class="flex min-w-48 flex-wrap gap-1.5">{#each s.channels as c}<Badge variant="secondary">{c}</Badge>{:else}<span class="text-muted-foreground text-sm">-</span>{/each}</div></Table.Cell><Table.Cell><div class="flex items-center gap-2"><Progress value={s.cap} class={cn('w-20', s.cap < 60 && 'opacity-70')} /><span class="text-xs">{s.cap}%</span></div></Table.Cell><Table.Cell class="text-right"><Tooltip.Root><Tooltip.Trigger><Button variant="ghost" size="sm">Detail<ChevronRight data-icon="inline-end" /></Button></Tooltip.Trigger><Tooltip.Content>Jadwal {s.date}</Tooltip.Content></Tooltip.Root></Table.Cell></Table.Row>{/each}</Table.Body></Table.Root>
+				{/if}
+			</Card.Content>
+			<Card.Footer><Separator class="my-1" /><Alert.Root variant="success"><CalendarDays data-icon="alert" /><Alert.Description>Jadwal tersimpan otomatis ke workforce.</Alert.Description></Alert.Root></Card.Footer>
+		</Card.Root>
+	{/if}
+	<p class="text-muted-foreground flex items-center gap-1 text-xs"><Info data-icon="inline" /> Channel: Omnichannel, Inbound Call, Email</p>
 </div>
+
+<Dialog.Root bind:open><Dialog.Content class="sm:max-w-md"><Dialog.Header><Dialog.Title>Tambah Jadwal</Dialog.Title><Dialog.Description>Buat jadwal agent baru per tanggal dan channel.</Dialog.Description></Dialog.Header><Field.FieldGroup class="flex flex-col gap-4 py-2"><Field.Field><Field.Label for="d">Tanggal</Field.Label><Input id="d" type="date" /></Field.Field></Field.FieldGroup><Dialog.Footer><Button variant="outline" onclick={() => (open = false)}>Batal</Button><Button onclick={() => (open = false)}>Simpan</Button></Dialog.Footer></Dialog.Content></Dialog.Root>
+
