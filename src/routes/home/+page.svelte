@@ -52,19 +52,6 @@
 <svelte:head><title>Home — DK UI Kit</title></svelte:head>
 
 <div class="flex flex-col gap-6">
-  <section class="flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
-    <div>
-      <div class="flex items-center gap-2 text-sm font-medium text-primary">
-        <Activity size={16} /> Real-time Performance Monitoring
-      </div>
-      <p class="mt-1 text-sm text-muted-foreground">Ringkasan performa seluruh kanal customer service.</p>
-    </div>
-    <div class="rounded-lg border border-border bg-card px-3 py-2 text-left md:text-right">
-      <div class="text-xs text-muted-foreground">Scope data</div>
-      <div class="text-sm font-semibold">Hari ini · Semua channel</div>
-    </div>
-  </section>
-
   <Card.Root>
     <Card.Header class="pb-3">
       <Card.Title class="text-base">Filter periode</Card.Title>

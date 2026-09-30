@@ -30,7 +30,7 @@
 <svelte:head><title>CSAT — DK CRM</title></svelte:head>
 
 <div class="space-y-6">
-  <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-end"><div><div class="mb-2 flex items-center gap-2 text-sm text-muted-foreground"><span>Insight</span><span>/</span><span class="text-foreground">CSAT</span></div><h2 class="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Laporan CSAT</h2><p class="mt-1 text-sm text-muted-foreground">Pantau penilaian layanan agent berdasarkan data IVR CSAT.</p></div><div class="flex gap-2"><Button variant="outline" size="sm"><Download size={16} />Ekspor laporan</Button><Button size="sm"><Filter size={16} />Filter</Button></div></div>
+  <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-end"><p class="text-sm text-muted-foreground">Pantau penilaian layanan agent berdasarkan data IVR CSAT.</p><div class="flex gap-2"><Button variant="outline" size="sm"><Download size={16} />Ekspor laporan</Button><Button size="sm"><Filter size={16} />Filter</Button></div></div>
 
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">{#each stats as stat}<Card.Root><Card.Content class="p-5"><p class="text-sm text-muted-foreground">{stat.label}</p><p class="mt-2 text-3xl font-bold text-foreground">{stat.value}</p><p class="mt-1 text-xs text-muted-foreground">{stat.hint}</p></Card.Content></Card.Root>{/each}</div>
 

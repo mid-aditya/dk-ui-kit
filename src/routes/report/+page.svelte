@@ -17,10 +17,8 @@
 
 <svelte:head><title>Report — DK UI Kit</title></svelte:head>
 
-<div></div>
-
 <!-- Reports Grid -->
-<div class="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+<div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
   {#each reports as r}
     <Card.Root class="hover:shadow-md transition-shadow">
       <Card.Header>

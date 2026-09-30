@@ -1,55 +1,38 @@
 <script lang="ts">
   import * as Card from '$lib/components/ui/card';
-  
-  
-  
+  import * as Alert from '$lib/components/ui/alert';
+  import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
-  import { Label } from '$lib/components/ui/label';
-  import Select from '$lib/components/ui/select.svelte';
-  import Alert from '$lib/components/ui/alert.svelte';
-  import { Badge } from '$lib/components/ui/badge';
-  import { UserRound, PlugZap, Bell, ShieldCheck, Save, Check, Mail, Phone, MessageSquare } from 'lucide-svelte';
+  import { Switch } from '$lib/components/ui/switch';
+  import { Settings2, Mail, Send, Database, Bell, ShieldCheck, Save, Check, UserRound } from 'lucide-svelte';
 
-  type Tab = 'profil' | 'kanal' | 'notifikasi';
-  let tab = $state<Tab>('profil');
-  let showSuccess = $state(false);
-  let profile = $state({ name: 'Operator', email: 'op@ahu.id', phone: '+62812' });
-  let channel = $state('whatsapp');
-  let notifTicket = $state(true);
-  let notifSummary = $state(true);
-
+  type Tab = 'general' | 'email' | 'outbound' | 'master';
+  let tab = $state<Tab>('general');
+  let saved = $state(false);
+  let notifications = $state(true);
+  let profile = $state({ name: 'Operator', email: 'op@ahu.id' });
   const tabs = [
-    { value: 'profil' as Tab, label: 'Profil', description: 'Informasi akun Anda', icon: UserRound },
-    { value: 'kanal' as Tab, label: 'Kanal', description: 'Koneksi dan kanal default', icon: PlugZap },
-    { value: 'notifikasi' as Tab, label: 'Notifikasi', description: 'Atur pemberitahuan', icon: Bell }
+    { value: 'general' as Tab, label: 'General', detail: 'Konfigurasi workspace', icon: Settings2 },
+    { value: 'email' as Tab, label: 'Email Setting', detail: 'SMTP dan autoreply', icon: Mail },
+    { value: 'outbound' as Tab, label: 'Outbound Blasting', detail: 'Template dan kampanye', icon: Send },
+    { value: 'master' as Tab, label: 'Master Data', detail: 'Status, kategori, prioritas', icon: Database }
   ];
-
-  function save() {
-    showSuccess = true;
-    setTimeout(() => (showSuccess = false), 3000);
-  }
+  const masterItems = ['Status tiket', 'Priority', 'Category', 'Sub category', 'Knowledge base'];
+  function save() { saved = true; setTimeout(() => (saved = false), 3000); }
 </script>
 
-<svelte:head><title>Pengaturan — DK CRM</title></svelte:head>
+<svelte:head><title>Settings — DK UI Kit</title></svelte:head>
 
-<div class="space-y-6">
-  <div><h2 class="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Pengaturan</h2><p class="mt-1 text-sm text-muted-foreground">Kelola profil, kanal, dan preferensi notifikasi akun Anda.</p></div>
-
-  <div class="grid gap-6 lg:grid-cols-[280px_1fr]">
-    <Card.Root class="h-fit"><Card.Content class="p-3"><div class="mb-3 px-3 pt-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Pengaturan akun</div><nav class="space-y-1" aria-label="Menu pengaturan">{#each tabs as item}<button type="button" onclick={() => (tab = item.value)} class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-colors {tab === item.value ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-muted-foreground hover:bg-accent hover:text-foreground'}"><item.icon size={18} /><span class="min-w-0 flex-1"><span class="block text-sm font-semibold">{item.label}</span><span class="mt-0.5 block text-xs {tab === item.value ? 'text-blue-100' : 'text-muted-foreground'}">{item.description}</span></span></button>{/each}</nav><div class="mt-5 rounded-xl border border-border bg-muted/30 p-3"><div class="flex items-center gap-2 text-sm font-medium"><ShieldCheck size={16} class="text-emerald-400" />Akun aman</div><p class="mt-1 text-xs leading-5 text-muted-foreground">Pengaturan hanya berlaku untuk akun Operator yang sedang aktif.</p></div></Card.Content></Card.Root>
-
-    <div class="min-w-0 space-y-5">
-      {#if tab === 'profil'}
-        <Card.Root><Card.Header><Card.Title>Profil pengguna</Card.Title><p class="text-sm text-muted-foreground">Perbarui informasi dasar yang digunakan pada aktivitas CRM.</p></Card.Header><Card.Content class="space-y-5"><div class="flex items-center gap-4 rounded-xl border border-border bg-muted/20 p-4"><div class="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-lg font-bold text-white">OP</div><div><p class="font-semibold text-foreground">{profile.name}</p><p class="text-sm text-muted-foreground">Operator layanan</p><Badge variant="success" class="mt-2">Aktif</Badge></div></div><div class="grid gap-5 md:grid-cols-2"><div><Label for="st-name">Nama lengkap</Label><div class="relative mt-2"><UserRound size={16} class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><Input id="st-name" bind:value={profile.name} class="pl-9" /></div></div><div><Label for="st-email">Email</Label><div class="relative mt-2"><Mail size={16} class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><Input id="st-email" bind:value={profile.email} type="email" class="pl-9" /></div></div><div><Label for="st-phone">Nomor telepon</Label><div class="relative mt-2"><Phone size={16} class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><Input id="st-phone" bind:value={profile.phone} type="tel" class="pl-9" /></div></div><div><Label for="st-role">Peran</Label><Input id="st-role" value="Operator" disabled class="mt-2" /></div></div></Card.Content></Card.Root>
-      {:else if tab === 'kanal'}
-        <Card.Root><Card.Header><Card.Title>Pengaturan kanal</Card.Title><p class="text-sm text-muted-foreground">Tentukan kanal default dan lihat status konektor yang aktif.</p></Card.Header><Card.Content class="space-y-5"><div><Label for="st-ch">Kanal default balasan</Label><Select bind:value={channel} options={[{ value: 'whatsapp', label: 'WhatsApp' }, { value: 'email', label: 'Email' }, { value: 'telegram', label: 'Telegram' }]} class="mt-2 w-full" /></div><div class="rounded-xl border border-border"><div class="border-b border-border px-4 py-3"><p class="text-sm font-semibold">Konektor aktif</p><p class="mt-1 text-xs text-muted-foreground">Status koneksi kanal pada workspace ini.</p></div><div class="divide-y divide-border">{#each [{ name: 'WhatsApp Official', detail: 'Pesan masuk dan keluar', icon: MessageSquare, status: 'Terhubung', variant: 'success' as const }, { name: 'Gateway unofficial', detail: 'Kanal percakapan tambahan', icon: PlugZap, status: 'Terhubung', variant: 'success' as const }, { name: 'SMTP Email', detail: 'Email keluar', icon: Mail, status: 'Perlu verifikasi', variant: 'warning' as const }] as connector}<div class="flex items-center justify-between gap-3 px-4 py-4"><div class="flex items-center gap-3"><div class="rounded-lg bg-muted p-2"><connector.icon size={17} class="text-primary" /></div><div><p class="text-sm font-medium">{connector.name}</p><p class="text-xs text-muted-foreground">{connector.detail}</p></div></div><Badge variant={connector.variant}>{connector.status}</Badge></div>{/each}</div></div></Card.Content></Card.Root>
-      {:else}
-        <Card.Root><Card.Header><Card.Title>Preferensi notifikasi</Card.Title><p class="text-sm text-muted-foreground">Pilih pemberitahuan yang ingin diterima oleh akun Anda.</p></Card.Header><Card.Content class="space-y-3"><label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-border p-4 transition-colors hover:bg-accent/50"><div><div class="font-medium text-foreground">Notifikasi tiket urgent</div><div class="mt-1 text-xs text-muted-foreground">Terima notifikasi untuk tiket prioritas urgent</div></div><input type="checkbox" bind:checked={notifTicket} class="h-5 w-5 rounded border-input accent-primary" /></label><label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-border p-4 transition-colors hover:bg-accent/50"><div><div class="font-medium text-foreground">Ringkasan harian email</div><div class="mt-1 text-xs text-muted-foreground">Kirim ringkasan email setiap pagi</div></div><input type="checkbox" bind:checked={notifSummary} class="h-5 w-5 rounded border-input accent-primary" /></label></Card.Content></Card.Root>
-      {/if}
-
-      {#if showSuccess}<Alert variant="success" title="Berhasil" dismissible><div class="flex items-center gap-2"><Check size={15} />Pengaturan tersimpan.</div></Alert>{/if}
-      <div class="flex justify-end"><Button onclick={save}><Save size={16} />Simpan pengaturan</Button></div>
+<div class="flex flex-col gap-6">
+  <div class="grid gap-6 lg:grid-cols-[260px_1fr]">
+    <Card.Root class="h-fit"><Card.Header class="pb-3"><Card.Title class="text-base">Settings menu</Card.Title></Card.Header><Card.Content class="flex flex-col gap-1">{#each tabs as item}<button type="button" onclick={() => (tab = item.value)} class="flex items-start gap-3 rounded-lg px-3 py-3 text-left transition-colors {tab === item.value ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-accent hover:text-foreground'}"><item.icon size={17} class="mt-0.5 shrink-0" /><span><span class="block text-sm font-medium">{item.label}</span><span class="mt-0.5 block text-xs opacity-75">{item.detail}</span></span></button>{/each}<div class="mt-4 rounded-lg border border-border bg-muted/30 p-3"><div class="flex items-center gap-2 text-sm font-medium"><ShieldCheck size={16} class="text-success" />Workspace aman</div><p class="mt-1 text-xs leading-5 text-muted-foreground">Perubahan hanya berlaku untuk akun operator aktif.</p></div></Card.Content></Card.Root>
+    <div class="flex min-w-0 flex-col gap-4">
+      {#if tab === 'general'}<Card.Root><Card.Header><Card.Title>General settings</Card.Title><p class="text-sm text-muted-foreground">Informasi utama workspace dan profil operator.</p></Card.Header><Card.Content class="flex flex-col gap-5"><div class="flex items-center gap-3 rounded-lg border border-border bg-muted/20 p-4"><div class="flex size-11 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">OP</div><div><p class="font-semibold">{profile.name}</p><p class="text-sm text-muted-foreground">Operator layanan</p></div><Badge variant="success" class="ml-auto">Aktif</Badge></div><div class="grid gap-4 md:grid-cols-2"><label class="flex flex-col gap-2 text-sm font-medium">Nama operator<Input bind:value={profile.name} /></label><label class="flex flex-col gap-2 text-sm font-medium">Email<Input bind:value={profile.email} type="email" /></label></div></Card.Content></Card.Root><Card.Root><Card.Header><Card.Title>Preferensi notifikasi</Card.Title><p class="text-sm text-muted-foreground">Atur notifikasi operasional yang diterima.</p></Card.Header><Card.Content><div class="flex items-center justify-between gap-4 rounded-lg border border-border p-4"><div><p class="text-sm font-medium">Notifikasi tiket urgent</p><p class="mt-1 text-xs text-muted-foreground">Terima pemberitahuan saat tiket prioritas tinggi masuk.</p></div><Switch bind:checked={notifications} aria-label="Notifikasi tiket urgent" /></div></Card.Content></Card.Root>
+      {:else if tab === 'email'}<Card.Root><Card.Header><Card.Title>Email setting</Card.Title><p class="text-sm text-muted-foreground">Koneksi SMTP dan template balasan otomatis.</p></Card.Header><Card.Content class="grid gap-3 sm:grid-cols-2"><Card.Root class="border-dashed"><Card.Content class="flex items-start gap-3 p-4"><Mail class="text-primary" /><div><p class="font-medium">SMTP Email</p><p class="mt-1 text-xs text-muted-foreground">Konfigurasi email keluar dan sender.</p><Badge variant="warning" class="mt-3">Perlu verifikasi</Badge></div></Card.Content></Card.Root><Card.Root class="border-dashed"><Card.Content class="flex items-start gap-3 p-4"><Bell class="text-primary" /><div><p class="font-medium">Autoreply</p><p class="mt-1 text-xs text-muted-foreground">Atur template respons otomatis.</p><Badge variant="secondary" class="mt-3">3 template</Badge></div></Card.Content></Card.Root></Card.Content></Card.Root>
+      {:else if tab === 'outbound'}<Card.Root><Card.Header><Card.Title>Outbound blasting</Card.Title><p class="text-sm text-muted-foreground">Kelola resource untuk kampanye outbound.</p></Card.Header><Card.Content class="grid gap-3 sm:grid-cols-2"><Card.Root class="border-dashed"><Card.Content class="flex items-start gap-3 p-4"><Send class="text-primary" /><div><p class="font-medium">Template pesan</p><p class="mt-1 text-xs text-muted-foreground">Template siap digunakan untuk kampanye.</p><Badge variant="secondary" class="mt-3">12 template</Badge></div></Card.Content></Card.Root><Card.Root class="border-dashed"><Card.Content class="flex items-start gap-3 p-4"><UserRound class="text-primary" /><div><p class="font-medium">Target audience</p><p class="mt-1 text-xs text-muted-foreground">Segmentasi kontak outbound.</p><Badge variant="secondary" class="mt-3">4 segment</Badge></div></Card.Content></Card.Root></Card.Content></Card.Root>
+      {:else}<Card.Root><Card.Header><Card.Title>Master data</Card.Title><p class="text-sm text-muted-foreground">Data dasar yang dipakai di ticketing dan reporting.</p></Card.Header><Card.Content class="grid gap-3 sm:grid-cols-2">{#each masterItems as item}<div class="flex items-center justify-between rounded-lg border border-border p-4"><div><p class="text-sm font-medium">{item}</p><p class="mt-1 text-xs text-muted-foreground">Kelola data {item.toLowerCase()}.</p></div><Button variant="outline" size="sm">Kelola</Button></div>{/each}</Card.Content></Card.Root>{/if}
+      {#if saved}<Alert.Root variant="success"><Check /><Alert.Description>Pengaturan berhasil disimpan.</Alert.Description></Alert.Root>{/if}<div class="flex justify-end"><Button onclick={save}><Save data-icon="inline-start" />Simpan pengaturan</Button></div>
     </div>
   </div>
 </div>
