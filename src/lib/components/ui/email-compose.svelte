@@ -1,7 +1,7 @@
 <script lang="ts">
   import { cn } from '$lib/utils';
   import { X, Send, Paperclip, MoreHorizontal } from 'lucide-svelte';
-  import Button from './button.svelte';
+  import { Button } from '$lib/components/ui/button';
 
   type Props = {
     class?: string;

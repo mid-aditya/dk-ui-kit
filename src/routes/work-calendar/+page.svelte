@@ -17,11 +17,15 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { Input } from '$lib/components/ui/input';
 	import * as Empty from '$lib/components/ui/empty';
+	import * as Popover from '$lib/components/ui/popover';
 	import { RangeCalendar } from '$lib/components/ui/range-calendar';
 	import { Spinner } from '$lib/components/ui/spinner';
 	import { cn } from '$lib/utils.js';
 	import { Plus, Upload, Search, Pencil, Trash2, CalendarDays, Info, Palmtree } from 'lucide-svelte';
-	import { CalendarDate } from '@internationalized/date';
+	import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalized/date';
+	import { CalendarIcon } from 'lucide-svelte';
+
+	const df = new DateFormatter('id-ID', { dateStyle: 'medium' });
 	import type { DateRange } from 'bits-ui';
 
 	let year = $state('2026'); let category = $state('all'); let q = $state(''); let tab = $state('daftar');
@@ -68,7 +72,7 @@
 			</Field.FieldGroup>
 			<ToggleGroup.Root type="single" bind:value={category} aria-label="Kategori"><ToggleGroup.Item value="all">Semua</ToggleGroup.Item><ToggleGroup.Item value="Libur Nasional">Nasional</ToggleGroup.Item><ToggleGroup.Item value="Libur Pemerintahan">Pemerintahan</ToggleGroup.Item><ToggleGroup.Item value="Custom">Custom</ToggleGroup.Item></ToggleGroup.Root>
 			<Tabs.Root bind:value={tab}><Tabs.List><Tabs.Trigger value="daftar">Daftar</Tabs.Trigger><Tabs.Trigger value="periode">Periode</Tabs.Trigger></Tabs.List></Tabs.Root>
-			{#if tab === 'periode'}<RangeCalendar bind:value={period} numberOfMonths={1} locale="id-ID" />{/if}
+			{#if tab === 'periode'}<Popover.Root><Popover.Trigger aria-label="Pilih periode kalender">{#snippet child({ props })}<Button {...props} variant="outline" class="justify-start px-2.5 font-normal"><CalendarIcon data-icon="inline-start" />{#if period?.start}{#if period.end}{df.format(period.start.toDate(getLocalTimeZone()))} - {df.format(period.end.toDate(getLocalTimeZone()))}{:else}{df.format(period.start.toDate(getLocalTimeZone()))}{/if}{:else}<span>Pilih periode</span>{/if}</Button>{/snippet}</Popover.Trigger><Popover.Content class="w-auto p-0" align="start"><Popover.Title class="sr-only">Pilih periode kalender</Popover.Title><Popover.Description class="sr-only">Kalender periode</Popover.Description><RangeCalendar bind:value={period} numberOfMonths={1} locale="id-ID" /></Popover.Content></Popover.Root>{/if}
 		</Card.Content>
 		<Card.Footer class="text-muted-foreground text-xs">{filtered.length} hari libur pada kalender {year}.</Card.Footer>
 	</Card.Root>

@@ -12,11 +12,12 @@
 	import { Badge } from "$lib/components/ui/badge";
 	import { Separator } from "$lib/components/ui/separator";
 	import { ScrollArea } from "$lib/components/ui/scroll-area";
+	import { Toaster } from "$lib/components/ui/sonner";
 	import {
 		LayoutDashboard, MessagesSquare, Ticket, Mail, BarChart3, Trophy,
 		PhoneCall, Settings, CalendarDays, Users, Sun, Moon, Archive,
 		Send, Gauge, FileText, ClipboardList, LogOut, Search, Bell,
-		ChevronDown, PenLine, Inbox, History, LayoutTemplate, CircleDot
+		ChevronDown, PenSquare, Inbox, History, LayoutTemplate, CircleDot
 	} from "lucide-svelte";
 	import "../app.css";
 
@@ -78,7 +79,7 @@
 		}
 	];
 
-	const emailIcons = [PenLine, Send, History, LayoutTemplate];
+	const emailIcons = [PenSquare, Send, History, LayoutTemplate];
 
 	let { children } = $props();
 	let sidebarOpen = $state(true);
@@ -295,6 +296,7 @@
 			</div>
 		</header>
 		<main class="min-h-0 min-w-0 flex-1 overflow-y-auto bg-background p-4 md:p-6">
+			<Toaster position="top-right" />
 			{@render children()}
 		</main>
 	</Sidebar.Inset>

@@ -15,11 +15,14 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Empty from '$lib/components/ui/empty';
+	import * as Popover from '$lib/components/ui/popover';
 	import { Calendar } from '$lib/components/ui/calendar';
 	import { Spinner } from '$lib/components/ui/spinner';
 	import { cn } from '$lib/utils.js';
-	import { Phone, MessageCircle, Mail, Share2, Star, TriangleAlert, CircleCheck, Info, CalendarDays, Inbox } from 'lucide-svelte';
-	import { CalendarDate, type DateValue } from '@internationalized/date';
+	import { Phone, MessageCircle, Mail, Share2, Star, TriangleAlert, CircleCheck, Info, CalendarDays, Inbox, CalendarIcon } from 'lucide-svelte';
+	import { CalendarDate, DateFormatter, getLocalTimeZone, type DateValue } from '@internationalized/date';
+
+	const df = new DateFormatter('id-ID', { dateStyle: 'medium' });
 
 	const channels = [
 		{ key: 'phone', label: 'Phone Calls', icon: Phone, total: '248 panggilan', answered: '212 terjawab (85%)', avg: '3m 24s', score: '4.6/5' },
@@ -56,7 +59,7 @@
 		<Card.Header><Card.Title>Statistik Kanal | Real-time Performance Monitoring</Card.Title><Card.Description>Filter rentang tanggal dan periode untuk memperbarui metrik kanal.</Card.Description></Card.Header>
 		<Card.Content class="flex flex-col gap-4">
 			<Field.FieldGroup class="grid gap-4 md:grid-cols-[1fr_1fr_auto]">
-				<Field.Field><Field.Label for="start">Start Date</Field.Label><Calendar type="single" bind:value={date} /></Field.Field>
+				<Field.Field><Field.Label for="start">Start Date</Field.Label><Popover.Root><Popover.Trigger id="start" aria-label="Pilih start date">{#snippet child({ props })}<Button {...props} variant="outline" class="w-full justify-start px-2.5 font-normal"><CalendarIcon data-icon="inline-start" />{#if date}{df.format(date.toDate(getLocalTimeZone()))}{:else}<span>Pilih tanggal</span>{/if}</Button>{/snippet}</Popover.Trigger><Popover.Content class="w-auto p-0" align="start"><Popover.Title class="sr-only">Pilih start date</Popover.Title><Popover.Description class="sr-only">Kalender start date</Popover.Description><Calendar type="single" bind:value={date} /></Popover.Content></Popover.Root></Field.Field>
 				<Field.Field>
 					<Field.Label for="period">Periode</Field.Label>
 					<Select.Root type="single" bind:value={period}>

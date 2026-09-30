@@ -17,11 +17,14 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { Input } from '$lib/components/ui/input';
 	import * as Empty from '$lib/components/ui/empty';
+	import * as Popover from '$lib/components/ui/popover';
 	import { Calendar } from '$lib/components/ui/calendar';
 	import { Spinner } from '$lib/components/ui/spinner';
 	import { cn } from '$lib/utils.js';
-	import { Plus, Search, RefreshCw, ChevronRight, CalendarDays, Info, CalendarClock } from 'lucide-svelte';
-	import { CalendarDate, type DateValue } from '@internationalized/date';
+	import { Plus, Search, RefreshCw, ChevronRight, CalendarDays, Info, CalendarClock, CalendarIcon } from 'lucide-svelte';
+	import { CalendarDate, DateFormatter, getLocalTimeZone, type DateValue } from '@internationalized/date';
+
+	const df = new DateFormatter('id-ID', { dateStyle: 'medium' });
 
 	let q = $state(''); let status = $state('semua'); let tab = $state('daftar'); let loading = $state(false); let open = $state(false);
 	let date = $state<DateValue | undefined>(new CalendarDate(2026, 9, 30));
@@ -59,7 +62,7 @@
 	</Card.Root>
 
 	{#if tab === 'kalender'}
-		<Card.Root><Card.Header><Card.Title>Kalender jadwal</Card.Title><Card.Description>Pilih tanggal untuk melihat detail.</Card.Description></Card.Header><Card.Content><Calendar type="single" bind:value={date} /></Card.Content><Card.Footer><p class="text-muted-foreground text-xs">Tanggal terpilih: {date?.toString() ?? '-'}</p></Card.Footer></Card.Root>
+		<Card.Root><Card.Header><Card.Title>Kalender jadwal</Card.Title><Card.Description>Pilih tanggal untuk melihat detail.</Card.Description></Card.Header><Card.Content><Popover.Root><Popover.Trigger aria-label="Pilih tanggal jadwal">{#snippet child({ props })}<Button {...props} variant="outline" class="justify-start px-2.5 font-normal"><CalendarIcon data-icon="inline-start" />{#if date}{df.format(date.toDate(getLocalTimeZone()))}{:else}<span>Pilih tanggal</span>{/if}</Button>{/snippet}</Popover.Trigger><Popover.Content class="w-auto p-0" align="start"><Popover.Title class="sr-only">Pilih tanggal jadwal</Popover.Title><Popover.Description class="sr-only">Kalender jadwal</Popover.Description><Calendar type="single" bind:value={date} /></Popover.Content></Popover.Root></Card.Content><Card.Footer><p class="text-muted-foreground text-xs">Tanggal terpilih: {date?.toString() ?? '-'}</p></Card.Footer></Card.Root>
 	{:else}
 		<Card.Root>
 			<Card.Header><Card.Title>Jadwal per tanggal</Card.Title><Card.Description>Kolom: No, Tanggal, Jumlah Agent, Channel, Aksi.</Card.Description></Card.Header>

@@ -20,6 +20,7 @@
 	import { Calendar } from '$lib/components/ui/calendar';
 	import { CalendarDate } from '@internationalized/date';
 	import { Chart as LCChart, Svg, Axis, Grid, Bars } from 'layerchart';
+	import { toast } from 'svelte-sonner';
 	import { RefreshCw, Users, Hourglass, MessagesSquare, CircleCheck, Search, UserPlus, ShieldCheck, TriangleAlert } from 'lucide-svelte';
 
 	let statusFilter: string | undefined = $state('all');
@@ -72,7 +73,7 @@
 	function statusVariant(s: Chat['status']) { return s === 'open' ? 'success' as const : s === 'queue' ? 'warning' as const : 'secondary' as const; }
 	function openAssign(customer: string) { selectedChat = customer; assignOpen = true; }
 	let refreshedAt = $state('10:24:00');
-	function refresh() { refreshedAt = new Date().toLocaleTimeString('id-ID'); }
+	function refresh() { toast.success('Data diperbarui'); refreshedAt = new Date().toLocaleTimeString('id-ID'); }
 </script>
 
 <svelte:head><title>SPV Dashboard — DK UI Kit</title></svelte:head>
@@ -115,7 +116,7 @@
 									<Table.Row>
 										<Table.Cell class="font-medium">{c.customer}</Table.Cell><Table.Cell>{c.channel}</Table.Cell><Table.Cell class="text-muted-foreground">{c.account}</Table.Cell>
 										<Table.Cell>{c.agent ?? '—'}</Table.Cell><Table.Cell><Badge variant={statusVariant(c.status)}>{c.status}</Badge></Table.Cell><Table.Cell>{c.started}</Table.Cell>
-										<Table.Cell class="text-right"><div class="flex justify-end gap-1">{#if c.agent}<Button size="sm" variant="outline">Release</Button><Button size="sm" variant="destructive" onclick={() => openAssign(c.customer)}>Re-assign</Button>{:else}<Button size="sm" onclick={() => openAssign(c.customer)}><UserPlus data-icon="inline-start" />Assign</Button>{/if}</div></Table.Cell>
+										<Table.Cell class="text-right"><div class="flex justify-end gap-1">{#if c.agent}<Button size="sm" variant="outline" onclick={() => toast.success('Sesi di-release')}>Release</Button><Button size="sm" variant="destructive" onclick={() => openAssign(c.customer)}>Re-assign</Button>{:else}<Button size="sm" onclick={() => openAssign(c.customer)}><UserPlus data-icon="inline-start" />Assign</Button>{/if}</div></Table.Cell>
 									</Table.Row>
 								{/each}
 							</Table.Body>
@@ -174,7 +175,7 @@
 			<Dialog.Header><Dialog.Title>List agent ready</Dialog.Title><Dialog.Description>Pilih agent untuk sesi milik {selectedChat || '—'}.</Dialog.Description></Dialog.Header>
 			<div class="overflow-x-auto rounded-xl border">
 				<Table.Root><Table.Header><Table.Row><Table.Head>Username</Table.Head><Table.Head>Nama</Table.Head><Table.Head class="text-right">Aksi</Table.Head></Table.Row></Table.Header>
-				<Table.Body>{#each readyAgents as a}<Table.Row><Table.Cell class="font-mono text-xs">{a.username}</Table.Cell><Table.Cell>{a.name}</Table.Cell><Table.Cell class="text-right"><Button size="sm" onclick={() => (assignOpen = false)}>Assign</Button></Table.Cell></Table.Row>{/each}</Table.Body></Table.Root>
+				<Table.Body>{#each readyAgents as a}<Table.Row><Table.Cell class="font-mono text-xs">{a.username}</Table.Cell><Table.Cell>{a.name}</Table.Cell><Table.Cell class="text-right"><Button size="sm" onclick={() => { assignOpen = false; toast.success('Agent di-assign'); }}>Assign</Button></Table.Cell></Table.Row>{/each}</Table.Body></Table.Root>
 			</div>
 			<Dialog.Footer><Button size="sm" variant="outline" onclick={() => (assignOpen = false)}>Tutup</Button></Dialog.Footer>
 		</Dialog.Content>
@@ -193,7 +194,7 @@
 					</InputOTP.Root>
 					<Field.Description>PIN diminta saat release semua sesi.</Field.Description>
 				</Field.Field>
-				<Button size="sm" onclick={() => (sheetOpen = false)}>Simpan jadwal</Button>
+				<Button size="sm" onclick={() => { sheetOpen = false; toast.success('Jadwal shift disimpan'); }}>Simpan jadwal</Button>
 			</div>
 		</Sheet.Content>
 	</Sheet.Root>

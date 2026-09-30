@@ -43,7 +43,7 @@
 			<Button size="sm" onclick={search}>Search</Button>
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>{#snippet child({ props })}<Button size="sm" variant="outline" {...props}><Filter class="size-4" /> Filter</Button>{/snippet}</DropdownMenu.Trigger>
-				<DropdownMenu.Content><DropdownMenu.Group><DropdownMenu.GroupHeading>Kanal</DropdownMenu.GroupHeading><DropdownMenu.Item>Semua</DropdownMenu.Item><DropdownMenu.Item>Chat</DropdownMenu.Item><DropdownMenu.Item>Email</DropdownMenu.Item><DropdownMenu.Item>Inbound</DropdownMenu.Item></DropdownMenu.Group></DropdownMenu.Content>
+				<DropdownMenu.Content><DropdownMenu.Group><DropdownMenu.GroupHeading>Kanal</DropdownMenu.GroupHeading><DropdownMenu.Item onclick={() => toast.success('Filter: Semua')}>Semua</DropdownMenu.Item><DropdownMenu.Item onclick={() => toast.success('Filter: Chat')}>Chat</DropdownMenu.Item><DropdownMenu.Item onclick={() => toast.success('Filter: Email')}>Email</DropdownMenu.Item><DropdownMenu.Item onclick={() => toast.success('Filter: Inbound')}>Inbound</DropdownMenu.Item></DropdownMenu.Group></DropdownMenu.Content>
 			</DropdownMenu.Root>
 		</Card.Header>
 	</Card.Root>
@@ -62,7 +62,7 @@
 									<Avatar.Root><Avatar.Fallback>{initials(r.user)}</Avatar.Fallback></Avatar.Root>
 									<span class="min-w-0 flex-1"><span class="flex items-center gap-2"><strong class="truncate text-sm">{r.user}</strong><Badge variant="outline" class="text-[10px]">{r.channel}</Badge><Badge variant="secondary">{r.count} pesan</Badge></span>
 									<span class="block truncate text-xs text-muted-foreground">{r.preview} • {r.agent} • {r.date}</span></span>
-									<Tooltip.Provider><Tooltip.Root><Tooltip.Trigger>{#snippet child({ props })}<Button size="sm" variant="outline" {...props}>Buka</Button>{/snippet}</Tooltip.Trigger><Tooltip.Content>Lihat timeline thread</Tooltip.Content></Tooltip.Root></Tooltip.Provider>
+									<Tooltip.Provider><Tooltip.Root><Tooltip.Trigger>{#snippet child({ props })}<Button size="sm" variant="outline" {...props} onclick={() => toast.success('Thread dibuka')}>Buka</Button>{/snippet}</Tooltip.Trigger><Tooltip.Content>Lihat timeline thread</Tooltip.Content></Tooltip.Root></Tooltip.Provider>
 									<Dialog.Root>
 										<Dialog.Trigger>{#snippet child({ props })}<Button size="sm" {...props}>Detail</Button>{/snippet}</Dialog.Trigger>
 										<Dialog.Content><Dialog.Header><Dialog.Title>Thread #{r.id} — {r.user}</Dialog.Title></Dialog.Header>

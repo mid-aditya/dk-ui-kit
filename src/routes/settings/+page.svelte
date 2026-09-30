@@ -20,6 +20,7 @@
 	import { Calendar } from '$lib/components/ui/calendar';
 	import { CalendarDate } from '@internationalized/date';
 	import { Chart as LCChart, Svg, Axis, Grid, Bars } from 'layerchart';
+	import { toast } from 'svelte-sonner';
 	import { Settings, Mail, Send, LayoutTemplate, Search, CircleCheck, TriangleAlert, KeyRound, History } from 'lucide-svelte';
 
 	let tab = $state('general');
@@ -123,7 +124,7 @@
 						{#if filteredCards(generalCards).length > 0}
 							<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
 								{#each filteredCards(generalCards) as c}
-									<Card.Root class="transition-shadow hover:shadow-md"><Card.Header><Card.Title class="text-base">{c.title}</Card.Title><p class="text-xs text-muted-foreground">{c.desc}</p></Card.Header><Card.Content><Button size="sm" variant="secondary" class="w-full">Kelola</Button></Card.Content></Card.Root>
+									<Card.Root class="transition-shadow hover:shadow-md"><Card.Header><Card.Title class="text-base">{c.title}</Card.Title><p class="text-xs text-muted-foreground">{c.desc}</p></Card.Header><Card.Content><Button size="sm" variant="secondary" class="w-full" onclick={() => toast.success('Membuka modul')}>Kelola</Button></Card.Content></Card.Root>
 								{/each}
 							</div>
 						{:else}
@@ -167,13 +168,13 @@
 						<Card.Content>
 							{#if blastView === 'wa'}
 								<p class="mb-3 text-sm font-medium">WhatsApp Blasting <span class="font-normal text-muted-foreground">— template HSM, plain text, dan blast official.</span></p>
-								<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">{#each filteredCards(waCards) as c}<Card.Root><Card.Header><Card.Title class="text-base">{c.title}</Card.Title><p class="text-xs text-muted-foreground">{c.desc}</p></Card.Header><Card.Content><Button size="sm" variant="secondary" class="w-full">Buka</Button></Card.Content></Card.Root>{/each}</div>
+								<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">{#each filteredCards(waCards) as c}<Card.Root><Card.Header><Card.Title class="text-base">{c.title}</Card.Title><p class="text-xs text-muted-foreground">{c.desc}</p></Card.Header><Card.Content><Button size="sm" variant="secondary" class="w-full" onclick={() => toast.success('Membuka template')}>Buka</Button></Card.Content></Card.Root>{/each}</div>
 							{:else if blastView === 'email'}
 								<p class="mb-3 text-sm font-medium">Email Blasting <span class="font-normal text-muted-foreground">— template, variabel, dan batch blast.</span></p>
-								<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">{#each filteredCards(emailBlastCards) as c}<Card.Root><Card.Header><Card.Title class="text-base">{c.title}</Card.Title><p class="text-xs text-muted-foreground">{c.desc}</p></Card.Header><Card.Content><Button size="sm" variant="secondary" class="w-full">Buka</Button></Card.Content></Card.Root>{/each}</div>
+								<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">{#each filteredCards(emailBlastCards) as c}<Card.Root><Card.Header><Card.Title class="text-base">{c.title}</Card.Title><p class="text-xs text-muted-foreground">{c.desc}</p></Card.Header><Card.Content><Button size="sm" variant="secondary" class="w-full" onclick={() => toast.success('Membuka template')}>Buka</Button></Card.Content></Card.Root>{/each}</div>
 							{:else}
 								<p class="mb-3 text-sm font-medium">Data & History <span class="font-normal text-muted-foreground">— dataset import dan riwayat semua channel.</span></p>
-								<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">{#each dataCards as c}<Card.Root><Card.Header><Card.Title class="text-base">{c.title}</Card.Title><p class="text-xs text-muted-foreground">{c.desc}</p></Card.Header><Card.Content><Button size="sm" variant="secondary" class="w-full">{c.title === 'Blast History' ? 'Lihat riwayat' : 'Kelola'}</Button></Card.Content></Card.Root>{/each}</div>
+								<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">{#each dataCards as c}<Card.Root><Card.Header><Card.Title class="text-base">{c.title}</Card.Title><p class="text-xs text-muted-foreground">{c.desc}</p></Card.Header><Card.Content><Button size="sm" variant="secondary" class="w-full" onclick={() => toast.success('Membuka riwayat blast')}>{c.title === 'Blast History' ? 'Lihat riwayat' : 'Kelola'}</Button></Card.Content></Card.Root>{/each}</div>
 							{/if}
 						</Card.Content>
 					</Card.Root>
@@ -223,7 +224,7 @@
 						{#if filteredCards([{ title: 'Status', desc: 'Kelola status' }, { title: 'Priority', desc: 'Kelola prioritas' }, { title: 'Kategori', desc: 'Kategori form' }, { title: 'Jenis Pengaduan', desc: 'Jenis per kategori' }, { title: 'Field', desc: 'Field setiap jenis' }, { title: 'Components', desc: 'Komponen field' }]).length > 0}
 							<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
 								{#each filteredCards([{ title: 'Status', desc: 'Kelola status' }, { title: 'Priority', desc: 'Kelola prioritas' }, { title: 'Kategori', desc: 'Kategori form' }, { title: 'Jenis Pengaduan', desc: 'Jenis per kategori' }, { title: 'Field', desc: 'Field setiap jenis' }, { title: 'Components', desc: 'Komponen field' }]) as c}
-									<Card.Root><Card.Header><Card.Title class="text-base">{c.title}</Card.Title><p class="text-xs text-muted-foreground">{c.desc}</p></Card.Header><Card.Content><Button size="sm" variant="secondary" class="w-full">Kelola</Button></Card.Content></Card.Root>
+									<Card.Root><Card.Header><Card.Title class="text-base">{c.title}</Card.Title><p class="text-xs text-muted-foreground">{c.desc}</p></Card.Header><Card.Content><Button size="sm" variant="secondary" class="w-full" onclick={() => toast.success('Membuka form')}>Kelola</Button></Card.Content></Card.Root>
 								{/each}
 							</div>
 						{:else}
