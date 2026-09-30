@@ -21,12 +21,7 @@
 
 <svelte:head><title>Work Calendar — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Work Calendar</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Kalender operasional & hari libur bulan berjalan.</p>
-  </div>
-</div>
+<div></div>
 
 <!-- Legend -->
 <div class="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">

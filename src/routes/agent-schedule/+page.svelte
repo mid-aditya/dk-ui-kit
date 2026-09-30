@@ -11,13 +11,7 @@
 
 <svelte:head><title>Agent Schedule — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Agent Schedule</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Shift & penugasan agent minggu ini.</p>
-  </div>
-  <Button size="sm">Atur shift</Button>
-</div>
+<div></div>
 
 <div class="mt-3 grid gap-3 lg:grid-cols-2">
   <!-- Shift Schedule -->

@@ -26,12 +26,7 @@
 
 <svelte:head><title>Settings — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Settings</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Profil, kanal & preferensi workspace.</p>
-  </div>
-</div>
+<div></div>
 
 <div class="mt-3 max-w-2xl">
   <!-- Tabs -->

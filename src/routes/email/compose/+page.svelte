@@ -30,11 +30,7 @@
 
 <svelte:head><title>Compose Email — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Compose</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Tulis email baru ke pelanggan.</p>
-  </div>
+<div class="flex items-center justify-end">
   <Button variant="ghost" href="/email">Kembali ke inbox</Button>
 </div>
 

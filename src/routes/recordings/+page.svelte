@@ -14,13 +14,7 @@
 
 <svelte:head><title>Recordings — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Recordings</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Rekaman interaksi voice & evaluasi QA.</p>
-  </div>
-  <Button size="sm" variant="secondary" href="/recording-archive">Arsip</Button>
-</div>
+<div></div>
 
 <!-- Search -->
 <div class="mt-3 max-w-sm">

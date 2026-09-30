@@ -13,13 +13,7 @@
 
 <svelte:head><title>Email History — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Email History</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Jejak lengkap email masuk & keluar.</p>
-  </div>
-  <Button size="sm" variant="secondary">Ekspor CSV</Button>
-</div>
+<div></div>
 
 <!-- Info Alert -->
 <Alert variant="info" title="Catatan" class="mt-3">

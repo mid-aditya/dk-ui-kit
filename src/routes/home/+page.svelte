@@ -25,13 +25,7 @@
 
 <svelte:head><title>Home — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Home</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Ringkasan operasional omnichannel hari ini.</p>
-  </div>
-  <Button href="/threads" size="sm">Buka threads</Button>
-</div>
+<div></div>
 
 <!-- Stats Cards -->
 <div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">

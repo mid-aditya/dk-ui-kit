@@ -22,11 +22,7 @@
 
 <svelte:head><title>Ticketing — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Ticketing</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Kelola tiket layanan pelanggan + SLA.</p>
-  </div>
+<div class="flex items-center justify-end">
   <Button size="sm" onclick={() => (modal = true)}>Buat tiket</Button>
 </div>
 

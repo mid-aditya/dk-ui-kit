@@ -8,13 +8,7 @@
 
 <svelte:head><title>Email Templates — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Email Templates</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Template siap pakai dengan variabel.</p>
-  </div>
-  <Button size="sm">Template baru</Button>
-</div>
+<div></div>
 
 <!-- Templates Grid -->
 <div class="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-3">

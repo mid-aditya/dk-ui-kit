@@ -10,12 +10,7 @@
 
 <svelte:head><title>Email Terkirim — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Email Terkirim</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Outbox & status pengiriman.</p>
-  </div>
-</div>
+<div></div>
 
 <!-- Sent Emails List -->
 <Card class="mt-3">

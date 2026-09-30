@@ -33,12 +33,6 @@
   <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-destructive text-white">
     <Radio size={20} />
   </div>
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Kirana Monitoring</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">
-      Live monitoring antrian & agent <Badge variant="destructive">LIVE</Badge>
-    </p>
-  </div>
 </div>
 
 <!-- Stats Cards -->

@@ -23,13 +23,7 @@
 
 <svelte:head><title>Threads — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Threads</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Semua percakapan lintas kanal.</p>
-  </div>
-  <Button href="/chat/v3" size="sm">Buka chat</Button>
-</div>
+<div></div>
 
 <div class="mt-3 flex flex-wrap items-center gap-3">
   <div class="w-full max-w-xs">

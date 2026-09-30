@@ -17,12 +17,7 @@
 
 <svelte:head><title>Report — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Report</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Pusat semua laporan operasional.</p>
-  </div>
-</div>
+<div></div>
 
 <!-- Reports Grid -->
 <div class="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-3">

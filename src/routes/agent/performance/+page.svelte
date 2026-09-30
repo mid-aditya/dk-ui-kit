@@ -15,12 +15,7 @@
 
 <svelte:head><title>Agent Performance — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Agent Performance</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Skor gabungan chat, tiket & CSAT per agent.</p>
-  </div>
-</div>
+<div></div>
 
 <!-- Performance Table -->
 <Card class="mt-3">

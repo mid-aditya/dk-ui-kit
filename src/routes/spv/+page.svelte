@@ -24,12 +24,7 @@
 
 <svelte:head><title>SPV — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">SPV</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Ruang kerja supervisor: monitoring, eskalasi & approval.</p>
-  </div>
-</div>
+<div></div>
 
 <!-- Stats Cards -->
 <div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">

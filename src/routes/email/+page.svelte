@@ -24,11 +24,7 @@
 
 <svelte:head><title>Email — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">Email</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Kotak masuk & arsip email pelanggan.</p>
-  </div>
+<div class="flex items-center justify-end">
   <Button href="/email/compose" size="sm">Tulis email</Button>
 </div>
 

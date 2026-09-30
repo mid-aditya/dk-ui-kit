@@ -19,13 +19,7 @@
 
 <svelte:head><title>CSAT Interaction — DK UI Kit</title></svelte:head>
 
-<div class="flex items-center justify-between">
-  <div>
-    <h1 class="text-2xl font-extrabold tracking-tight">CSAT Interaction</h1>
-    <p class="mt-0.5 text-sm text-muted-foreground">Setiap interaksi yang diberi rating pelanggan.</p>
-  </div>
-  <Badge variant="success">★ 4.6 rata-rata</Badge>
-</div>
+<div></div>
 
 <!-- Toolbar -->
 <div class="mt-3 flex flex-wrap items-center gap-2">
