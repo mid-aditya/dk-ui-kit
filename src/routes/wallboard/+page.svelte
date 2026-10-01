@@ -1,5 +1,102 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { locale } from '$lib/i18n';
+
+	const STR = {
+		id: {
+			title: 'Wallboard AHU — DK UI Kit',
+			heading: 'Wallboard AHU',
+			at: 'pukul',
+			lastUpdated: 'Last updated at',
+			incoming: 'INCOMING',
+			queue: 'QUEUE',
+			answered: 'ANSWERED',
+			abandoned: 'ABANDONED',
+			totalEmail: 'TOTAL EMAIL',
+			distributed: 'DISTRIBUTED',
+			skill: 'SKILL',
+			que: 'QUE',
+			notReady: 'NOT READY',
+			ready: 'READY',
+			consult: 'KONSULTASI',
+			complaint: 'ADUAN',
+			subcategory: 'SUBCATEGORY',
+			total: 'TOTAL',
+			waitQueue: 'WAIT IN QUEUE',
+			incomingChat: 'INCOMING CHAT',
+			incomingCall: 'INCOMING CALL'
+		},
+		en: {
+			title: 'Wallboard AHU — DK UI Kit',
+			heading: 'Wallboard AHU',
+			at: 'at',
+			lastUpdated: 'Last updated at',
+			incoming: 'INCOMING',
+			queue: 'QUEUE',
+			answered: 'ANSWERED',
+			abandoned: 'ABANDONED',
+			totalEmail: 'TOTAL EMAIL',
+			distributed: 'DISTRIBUTED',
+			skill: 'SKILL',
+			que: 'QUE',
+			notReady: 'NOT READY',
+			ready: 'READY',
+			consult: 'CONSULTATION',
+			complaint: 'COMPLAINT',
+			subcategory: 'SUBCATEGORY',
+			total: 'TOTAL',
+			waitQueue: 'WAIT IN QUEUE',
+			incomingChat: 'INCOMING CHAT',
+			incomingCall: 'INCOMING CALL'
+		},
+		th: {
+			title: 'วอลล์บอร์ด AHU — DK UI Kit',
+			heading: 'วอลล์บอร์ด AHU',
+			at: 'เวลา',
+			lastUpdated: 'อัปเดตล่าสุดเมื่อ',
+			incoming: 'สายเข้า',
+			queue: 'คิว',
+			answered: 'รับสายแล้ว',
+			abandoned: 'สายหลุด',
+			totalEmail: 'อีเมลทั้งหมด',
+			distributed: 'กระจายแล้ว',
+			skill: 'ทักษะ',
+			que: 'คิว',
+			notReady: 'ไม่พร้อม',
+			ready: 'พร้อม',
+			consult: 'ปรึกษา',
+			complaint: 'ร้องเรียน',
+			subcategory: 'หมวดหมู่ย่อย',
+			total: 'รวม',
+			waitQueue: 'รอในคิว',
+			incomingChat: 'แชทเข้า',
+			incomingCall: 'สายเรียกเข้า'
+		},
+		tl: {
+			title: 'Wallboard AHU — DK UI Kit',
+			heading: 'Wallboard AHU',
+			at: 'nang',
+			lastUpdated: 'Huling na-update noong',
+			incoming: 'PUMAPASOK',
+			queue: 'PILA',
+			answered: 'NASAGOT',
+			abandoned: 'NAIWAN',
+			totalEmail: 'KABUUANG EMAIL',
+			distributed: 'NAIPAMAHAGI',
+			skill: 'SKILL',
+			que: 'PILA',
+			notReady: 'HINDI HANDA',
+			ready: 'HANDA',
+			consult: 'KONSULTASYON',
+			complaint: 'REKLAMO',
+			subcategory: 'SUBCATEGORY',
+			total: 'KABUUAN',
+			waitQueue: 'NAGHIHINTAY SA PILA',
+			incomingChat: 'PUMAPASOK NA CHAT',
+			incomingCall: 'PUMAPASOK NA TAWAG'
+		}
+	} as const;
+	let s = $derived(STR[$locale]);
 
 	type Skill = { name: string; que: number; notReady: number; ready: number; abn: number; scr: number; answered: number };
 
@@ -45,8 +142,10 @@
 		{ name: 'MPP KOTA BOGOR', kon: 1, adu: 0, cet: 2 }
 	];
 
-	const dayFmt = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-	const timeFmt = new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+	const DATE_LOCALES = { id: 'id-ID', en: 'en-US', th: 'th-TH', tl: 'fil-PH' } as const;
+	let dateLocale = $derived(DATE_LOCALES[$locale] ?? 'id-ID');
+	let dayFmt = $derived(new Intl.DateTimeFormat(dateLocale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
+	let timeFmt = $derived(new Intl.DateTimeFormat(dateLocale, { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
 
 	onMount(() => {
 		const clock = setInterval(() => (now = new Date()), 1000);
@@ -65,17 +164,17 @@
 	});
 </script>
 
-<svelte:head><title>Wallboard AHU — DK UI Kit</title></svelte:head>
+<svelte:head><title>{s.title}</title></svelte:head>
 
 <div class="flex min-h-svh flex-col gap-3 bg-slate-950 p-3 text-slate-100">
 	<header class="flex flex-wrap items-center gap-3">
 		<div class="flex items-center gap-2">
 			<img src="/favicon.svg" alt="Logo" class="size-8 rounded-md" />
-			<h1 class="text-xl font-bold tracking-tight">Wallboard AHU</h1>
+			<h1 class="text-xl font-bold tracking-tight">{s.heading}</h1>
 		</div>
 		<div class="ms-auto rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-1.5 text-right">
-			<p class="text-xs font-semibold tracking-wide uppercase">{dayFmt.format(now)} pukul {timeFmt.format(now)}</p>
-			<p class="text-[10px] tracking-wide text-slate-400 uppercase">Last updated at {timeFmt.format(lastUpdated)}</p>
+			<p class="text-xs font-semibold tracking-wide uppercase">{dayFmt.format(now)} {s.at} {timeFmt.format(now)}</p>
+			<p class="text-[10px] tracking-wide text-slate-400 uppercase">{s.lastUpdated} {timeFmt.format(lastUpdated)}</p>
 		</div>
 	</header>
 
@@ -91,19 +190,19 @@
 				<p class="mt-1 text-4xl font-bold tabular-nums">17<span class="text-lg">.1</span><span class="text-sm font-medium"> %</span></p>
 			</section>
 			<section class="rounded-xl border border-slate-800 bg-slate-900/70 p-3" aria-label="Incoming">
-				<p class="text-[11px] font-semibold tracking-wider text-slate-400">INCOMING</p>
+				<p class="text-[11px] font-semibold tracking-wider text-slate-400">{s.incoming}</p>
 				<p class="text-4xl font-bold tabular-nums">{incoming}</p>
 			</section>
 			<section class="rounded-xl border border-slate-800 bg-slate-900/70 p-3" aria-label="Queue">
-				<p class="text-[11px] font-semibold tracking-wider text-slate-400">QUEUE</p>
+				<p class="text-[11px] font-semibold tracking-wider text-slate-400">{s.queue}</p>
 				<p class="text-4xl font-bold tabular-nums text-amber-400">{queue}</p>
 			</section>
 			<section class="rounded-xl border border-slate-800 bg-slate-900/70 p-3" aria-label="Answered">
-				<p class="text-[11px] font-semibold tracking-wider text-slate-400">ANSWERED</p>
+				<p class="text-[11px] font-semibold tracking-wider text-slate-400">{s.answered}</p>
 				<p class="text-4xl font-bold tabular-nums text-green-400">{answered}</p>
 			</section>
 			<section class="rounded-xl border border-slate-800 bg-slate-900/70 p-3" aria-label="Abandoned">
-				<p class="text-[11px] font-semibold tracking-wider text-slate-400">ABANDONED</p>
+				<p class="text-[11px] font-semibold tracking-wider text-slate-400">{s.abandoned}</p>
 				<p class="text-4xl font-bold tabular-nums text-red-400">{abandoned}</p>
 			</section>
 			<section class="col-span-2 rounded-xl border border-slate-800 bg-blue-600 p-3" aria-label="SCR Email">
@@ -111,15 +210,15 @@
 				<p class="mt-1 text-4xl font-bold tabular-nums">74<span class="text-lg">.5</span><span class="text-sm font-medium"> %</span></p>
 			</section>
 			<section class="rounded-xl border border-slate-800 bg-slate-900/70 p-3" aria-label="Total Email">
-				<p class="text-[11px] font-semibold tracking-wider text-slate-400">TOTAL EMAIL</p>
+				<p class="text-[11px] font-semibold tracking-wider text-slate-400">{s.totalEmail}</p>
 				<p class="text-4xl font-bold tabular-nums">470</p>
 			</section>
 			<section class="rounded-xl border border-slate-800 bg-slate-900/70 p-3" aria-label="Distributed">
-				<p class="text-[11px] font-semibold tracking-wider text-slate-400">DISTRIBUTED</p>
+				<p class="text-[11px] font-semibold tracking-wider text-slate-400">{s.distributed}</p>
 				<p class="text-4xl font-bold tabular-nums text-amber-400">161</p>
 			</section>
 			<section class="col-span-2 flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-3" aria-label="Email Answered">
-				<p class="text-[11px] font-semibold tracking-wider text-slate-400">ANSWERED</p>
+				<p class="text-[11px] font-semibold tracking-wider text-slate-400">{s.answered}</p>
 				<p class="text-4xl font-bold tabular-nums text-green-400">120</p>
 			</section>
 		</div>
@@ -131,25 +230,25 @@
 					<table class="w-full min-w-[640px] text-sm">
 						<thead>
 							<tr class="text-left text-[11px] tracking-wider text-slate-400">
-								<th class="px-4 py-2.5 font-semibold">SKILL</th>
-								<th class="px-4 py-2.5 text-center font-semibold">QUE</th>
-								<th class="px-4 py-2.5 text-center font-semibold">NOT READY</th>
-								<th class="px-4 py-2.5 text-center font-semibold">READY</th>
+								<th class="px-4 py-2.5 font-semibold">{s.skill}</th>
+								<th class="px-4 py-2.5 text-center font-semibold">{s.que}</th>
+								<th class="px-4 py-2.5 text-center font-semibold">{s.notReady}</th>
+								<th class="px-4 py-2.5 text-center font-semibold">{s.ready}</th>
 								<th class="px-4 py-2.5 text-center font-semibold">ABN %</th>
 								<th class="px-4 py-2.5 text-center font-semibold">SCR %</th>
-								<th class="px-4 py-2.5 text-center font-semibold">ANSWERED</th>
+								<th class="px-4 py-2.5 text-center font-semibold">{s.answered}</th>
 							</tr>
 						</thead>
 						<tbody class="divide-y divide-slate-800/70">
-							{#each skills as s (s.name)}
+							{#each skills as sk (sk.name)}
 								<tr class="tabular-nums">
-									<td class="px-4 py-2 font-semibold">{s.name}</td>
-									<td class="px-4 py-2 text-center text-amber-400">{s.que}</td>
-									<td class="px-4 py-2 text-center text-red-400">{s.notReady}</td>
-									<td class="px-4 py-2 text-center text-green-400">{s.ready}</td>
-									<td class="px-4 py-2 text-center text-red-400">{s.abn.toFixed(1)}%</td>
-									<td class="px-4 py-2 text-center text-green-400">{s.scr.toFixed(1)}%</td>
-									<td class="px-4 py-2 text-center">{s.answered}</td>
+									<td class="px-4 py-2 font-semibold">{sk.name}</td>
+									<td class="px-4 py-2 text-center text-amber-400">{sk.que}</td>
+									<td class="px-4 py-2 text-center text-red-400">{sk.notReady}</td>
+									<td class="px-4 py-2 text-center text-green-400">{sk.ready}</td>
+									<td class="px-4 py-2 text-center text-red-400">{sk.abn.toFixed(1)}%</td>
+									<td class="px-4 py-2 text-center text-green-400">{sk.scr.toFixed(1)}%</td>
+									<td class="px-4 py-2 text-center">{sk.answered}</td>
 								</tr>
 							{/each}
 						</tbody>
@@ -161,9 +260,9 @@
 					<table class="w-full text-sm">
 						<thead>
 							<tr class="text-left text-[11px] tracking-wider text-slate-400">
-								<th class="px-4 py-2.5 font-semibold">KONSULTASI</th>
-								<th class="px-4 py-2.5 font-semibold">SUBCATEGORY</th>
-								<th class="px-4 py-2.5 text-right font-semibold">TOTAL</th>
+								<th class="px-4 py-2.5 font-semibold">{s.consult}</th>
+								<th class="px-4 py-2.5 font-semibold">{s.subcategory}</th>
+								<th class="px-4 py-2.5 text-right font-semibold">{s.total}</th>
 							</tr>
 						</thead>
 						<tbody class="divide-y divide-slate-800/70 tabular-nums">
@@ -177,9 +276,9 @@
 					<table class="w-full text-sm">
 						<thead>
 							<tr class="text-left text-[11px] tracking-wider text-slate-400">
-								<th class="px-4 py-2.5 font-semibold">ADUAN</th>
-								<th class="px-4 py-2.5 font-semibold">SUBCATEGORY</th>
-								<th class="px-4 py-2.5 text-right font-semibold">TOTAL</th>
+								<th class="px-4 py-2.5 font-semibold">{s.complaint}</th>
+								<th class="px-4 py-2.5 font-semibold">{s.subcategory}</th>
+								<th class="px-4 py-2.5 text-right font-semibold">{s.total}</th>
 							</tr>
 						</thead>
 						<tbody class="divide-y divide-slate-800/70 tabular-nums">
@@ -199,15 +298,15 @@
 				<p class="mt-1 text-4xl font-bold tabular-nums">0<span class="text-sm font-medium"> %</span></p>
 			</section>
 			<section class="rounded-xl border border-slate-800 bg-slate-900/70 p-3" aria-label="Wait in Queue">
-				<p class="text-[11px] font-semibold tracking-wider text-slate-400">WAIT IN QUEUE</p>
+				<p class="text-[11px] font-semibold tracking-wider text-slate-400">{s.waitQueue}</p>
 				<p class="text-3xl font-bold tabular-nums text-amber-400">0</p>
 			</section>
 			<section class="rounded-xl border border-slate-800 bg-slate-900/70 p-3" aria-label="Incoming Chat">
-				<p class="text-[11px] font-semibold tracking-wider text-slate-400">INCOMING CHAT</p>
+				<p class="text-[11px] font-semibold tracking-wider text-slate-400">{s.incomingChat}</p>
 				<p class="text-3xl font-bold tabular-nums text-purple-400">0</p>
 			</section>
 			<section class="col-span-2 flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-3" aria-label="Chat Answered">
-				<p class="text-[11px] font-semibold tracking-wider text-slate-400">ANSWERED</p>
+				<p class="text-[11px] font-semibold tracking-wider text-slate-400">{s.answered}</p>
 				<p class="text-3xl font-bold tabular-nums text-blue-400">0</p>
 			</section>
 			<section class="col-span-2 rounded-xl border border-slate-800 bg-green-600 p-3" aria-label="SCR WA Call">
@@ -215,15 +314,15 @@
 				<p class="mt-1 text-4xl font-bold tabular-nums">64<span class="text-lg">.3</span><span class="text-sm font-medium"> %</span></p>
 			</section>
 			<section class="rounded-xl border border-slate-800 bg-slate-900/70 p-3" aria-label="Wait in Queue Call">
-				<p class="text-[11px] font-semibold tracking-wider text-slate-400">WAIT IN QUEUE</p>
+				<p class="text-[11px] font-semibold tracking-wider text-slate-400">{s.waitQueue}</p>
 				<p class="text-3xl font-bold tabular-nums text-amber-400">{waitQueue}</p>
 			</section>
 			<section class="rounded-xl border border-slate-800 bg-slate-900/70 p-3" aria-label="Incoming Call">
-				<p class="text-[11px] font-semibold tracking-wider text-slate-400">INCOMING CALL</p>
+				<p class="text-[11px] font-semibold tracking-wider text-slate-400">{s.incomingCall}</p>
 				<p class="text-3xl font-bold tabular-nums text-purple-400">{incomingCall}</p>
 			</section>
 			<section class="col-span-2 flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-3" aria-label="Call Answered">
-				<p class="text-[11px] font-semibold tracking-wider text-slate-400">ANSWERED</p>
+				<p class="text-[11px] font-semibold tracking-wider text-slate-400">{s.answered}</p>
 				<p class="text-3xl font-bold tabular-nums text-blue-400">{answeredCall}</p>
 			</section>
 		</div>
