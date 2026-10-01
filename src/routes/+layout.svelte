@@ -21,7 +21,7 @@
 		Star, Mail, PenSquare, Inbox, Send, FileEdit, LayoutTemplate, History,
 		MonitorDot, Radio, PhoneCall, Archive, Radar, ChartColumn, Settings,
 		CalendarClock, CalendarDays, CalendarRange, Clock, Sun, Moon, Search, Bell,
-		ChevronDown, LogOut, Gauge, Trophy, LayoutGrid
+		ChevronDown, LogOut, Gauge, Trophy, LayoutGrid, Tv
 	} from "lucide-svelte";
 	import "../app.css";
 
@@ -43,7 +43,8 @@
 			subs: [
 				{ to: "/chat/v3/ticket/result", label: "Ticket", icon: TicketCheck },
 				{ to: "/threads", label: "Threads", icon: ThreadsIcon },
-				{ to: "/report/csat", label: "CSAT", icon: Star }
+				{ to: "/report/csat", label: "CSAT", icon: Star },
+				{ to: "/wallboard", label: "Wallboard", icon: Tv }
 			]
 		},
 		{
@@ -181,11 +182,19 @@
 		"/settings": "Settings",
 		"/agent-schedule": "Agent Schedule",
 		"/work-calendar": "Work Calendar",
-		"/operational-hours": "Operational Hours"
+		"/operational-hours": "Operational Hours",
+		"/wallboard": "Wallboard"
 	};
 	let pageTitle = $derived(pageTitles[page.url.pathname] ?? "DK CRM");
+	let isWallboard = $derived(page.url.pathname === "/wallboard");
 </script>
 
+{#if isWallboard}
+	<div class="min-h-svh bg-slate-950 text-slate-100">
+		<Toaster position="top-right" />
+		{@render children()}
+	</div>
+{:else}
 <Sidebar.Provider bind:open={sidebarOpen} onOpenChange={updateSidebar} class="min-h-svh bg-background text-foreground">
 	<Sidebar.Root collapsible="icon" variant="sidebar">
 		<Sidebar.Header>
@@ -378,3 +387,4 @@
 		</main>
 	</Sidebar.Inset>
 </Sidebar.Provider>
+{/if}
